@@ -51,7 +51,9 @@ TURNSTILE_SITE_KEY = "1x00000000000000000000AA"  # Cloudflare always-pass test k
 # --- Scheduled triggers -----------------------------------------------------
 
 [triggers]
-crons = ["0 3 * * *"] # daily 03:00 UTC: prune expired rows, back up D1 to R2
+# Daily 03:00 UTC: prune expired rows. Also backs up D1 to R2 if the BACKUPS
+# bucket is bound above; skipped silently otherwise so the cron still prunes.
+crons = ["0 3 * * *"]
 
 # --- Observability ----------------------------------------------------------
 # Enables log capture in the Cloudflare dashboard (Workers > stub > Logs) and

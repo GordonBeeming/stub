@@ -15,7 +15,7 @@ Only the email you configure can log in. Notes are encrypted in your browser bef
 
 - Node 20+
 - pnpm 9+
-- A Cloudflare account with Workers, D1, KV, R2, and Turnstile access
+- A Cloudflare account with Workers, D1, KV, and Turnstile access. R2 is optional — it only powers nightly JSONL backups, which you can skip or enable later (see `/stub/setup`).
 - A Resend account for magic-link email (or swap the `sendMagicLink` adapter in `apps/app/lib/email.ts`)
 - A domain on Cloudflare with a sub-domain you can point at the Worker (the included `wrangler.example.toml` assumes `stub.gordonbeeming.com`)
 
@@ -52,12 +52,8 @@ npx wrangler secret put IP_HASH_SALT
 # 6. edit wrangler.toml vars for your setup
 #    OWNER_EMAIL, RESEND_FROM, SITE_URL, TURNSTILE_SITE_KEY
 
-# 7. build and ship
-cd ../..
-pnpm build
-cd apps/app
-npx opennextjs-cloudflare build
-npx opennextjs-cloudflare deploy
+# 7. build and ship — one chained script so .open-next/ stays consistent
+pnpm --filter @stub/app cf:deploy
 # add the route in the Cloudflare dashboard pointing your subdomain at the Worker
 ```
 
