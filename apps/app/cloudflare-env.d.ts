@@ -1,5 +1,7 @@
 // Typed surface for Cloudflare bindings + vars declared in wrangler.toml.
-// Access in server code via `getEnv()` from `lib/cf.ts`.
+// Bindings are accessed via `c.env.X` in Hono handlers; the Hono app is
+// parameterized with `{ Bindings: CloudflareEnv }` so every handler gets
+// the typed env without a separate getEnv() helper.
 
 interface CloudflareEnv {
   // Bindings
@@ -23,12 +25,4 @@ interface CloudflareEnv {
   RESEND_API_KEY: string;
   TURNSTILE_SECRET: string;
   IP_HASH_SALT: string;
-}
-
-declare namespace NodeJS {
-  // Merges CloudflareEnv bindings into NodeJS.ProcessEnv so process.env.X is
-  // typed. The empty body is intentional — this is a declaration-merging
-  // extension, not a stand-alone interface with its own members.
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface ProcessEnv extends Partial<CloudflareEnv> {}
 }

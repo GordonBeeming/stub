@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Local dev one-shot. Runs stub on http://localhost:8787 with real Cloudflare bindings (local D1, KV, R2) via Miniflare.
+# Local dev one-shot. Runs stub on http://localhost:5173 with real Cloudflare bindings (local D1, KV, R2) via Miniflare.
 # First run sets up wrangler.toml, .dev.vars, applies the D1 schema. Subsequent runs skip setup and start fast.
 set -euo pipefail
 
@@ -39,13 +39,13 @@ if [ ! -d .wrangler/state/v3/d1 ]; then
 fi
 
 echo ""
-echo "// starting stub on http://localhost:8787"
+echo "// starting stub on http://localhost:5173"
 echo "// ctrl+c to stop"
 echo ""
 
-# Run the preview in its own process group. On ctrl+c, nuke the whole group
-# so workerd, wrangler, node and any orphans die together — piping this
-# script through grep/tee otherwise leaves workerd holding port 8787.
+# Run vite in its own process group. On ctrl+c, nuke the whole group so
+# workerd, vite, node and any orphans die together — piping this script
+# through grep/tee otherwise leaves workerd holding the miniflare port.
 # Snapshot workerd pids at startup so we can kill only the ones we spawned
 # (not another stub instance the user might already have running).
 # `|| true` — pgrep exits 1 when nothing matches, which under set -e +
@@ -56,10 +56,11 @@ cleanup() {
   trap - INT TERM EXIT
   echo ""
   echo "// shutting down"
-  # Workerd detaches from its spawner (wrangler → node), so by the time we
-  # get here it's re-parented to init. Walking the PID tree doesn't reach it.
-  # Kill by name, but spare any workerd that was already running before we
-  # started. Fall back to anything still holding port 8787.
+  # Workerd detaches from its spawner (vite → @cloudflare/vite-plugin →
+  # node), so by the time we get here it's re-parented to init. Walking
+  # the PID tree doesn't reach it. Kill by name, but spare any workerd
+  # that was already running before we started. Fall back to anything
+  # still holding the vite port.
   local after
   after=$(pgrep -f workerd 2>/dev/null || true)
   for pid in $after; do
@@ -68,14 +69,14 @@ cleanup() {
       *) kill -9 "$pid" 2>/dev/null || true ;;
     esac
   done
-  pkill -f "opennextjs-cloudflare" 2>/dev/null || true
+  pkill -f "vite" 2>/dev/null || true
   pkill -f "wrangler dev" 2>/dev/null || true
-  lsof -ti:8787 2>/dev/null | xargs -r kill -9 2>/dev/null || true
+  lsof -ti:5173 2>/dev/null | xargs -r kill -9 2>/dev/null || true
   exit 0
 }
 # EXIT fires for any exit path, including SIGPIPE from a dead pipeline reader
 # (e.g. `./run.sh | grep ...` where grep is killed first).
 trap cleanup INT TERM EXIT
 
-pnpm cf:preview
+pnpm dev
 wait
