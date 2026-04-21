@@ -7,6 +7,7 @@ import { linkRoutes } from './routes/api/links';
 import { noteRoutes } from './routes/api/notes';
 import { redirectRoutes } from './routes/redirect';
 import { runDailyCron } from './lib/cron';
+import { resolveOrigin } from './lib/cf';
 
 // Top-level Hono app. Each feature area mounts its own sub-app under a
 // dedicated prefix so the handlers stay focused and the route tree reads
@@ -32,13 +33,16 @@ app.get('/api/health', (c) =>
 
 // Public bootstrap config consumed by the SPA on first render. Only safe
 // values go here — the Turnstile site key is public by design (it pairs
-// with the private secret stored as a wrangler secret), and SITE_URL is
-// the canonical app origin the client uses to build share URLs. Secrets
-// never land in this payload.
+// with the private secret stored as a wrangler secret). `siteUrl` comes
+// from `resolveOrigin` so local dev on http://localhost:5173 returns its
+// own origin for share URLs, while production still locks to env.SITE_URL
+// (protects against Host-header spoofing). Without this, forkers running
+// `./run.sh` against the default wrangler.example.toml would see the SPA
+// generate share links pointing at the example host.
 app.get('/api/config', (c) =>
   c.json({
     turnstileSiteKey: c.env.TURNSTILE_SITE_KEY,
-    siteUrl: c.env.SITE_URL,
+    siteUrl: resolveOrigin(c.req.raw, c.env),
   }),
 );
 

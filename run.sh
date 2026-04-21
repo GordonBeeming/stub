@@ -43,24 +43,33 @@ echo "// starting stub on http://localhost:5173"
 echo "// ctrl+c to stop"
 echo ""
 
-# Run vite in its own process group. On ctrl+c, nuke the whole group so
-# workerd, vite, node and any orphans die together — piping this script
-# through grep/tee otherwise leaves workerd holding the miniflare port.
-# Snapshot workerd pids at startup so we can kill only the ones we spawned
-# (not another stub instance the user might already have running).
-# `|| true` — pgrep exits 1 when nothing matches, which under set -e +
-# pipefail would kill the script before the server starts.
+# Job control enables a new process group per background job. `pnpm dev`
+# (with `&`) then runs as its own PGID, which we capture and kill on
+# shutdown. That targets only the vite/node/workerd tree this script
+# spawned — never a sibling `pnpm dev` the developer already has running
+# for another project.
+#
+# Workerd is the exception: the Cloudflare Vite plugin spawns it as a
+# detached worker that re-parents to init, so it escapes the PGID we
+# control. Snapshot workerd PIDs at startup and delta-kill at shutdown so
+# we only touch the ones this run brought up.
+set -m
 SELF_WORKERDS_BEFORE=$( (pgrep -f workerd 2>/dev/null || true) | sort | tr '\n' ' ')
 
 cleanup() {
   trap - INT TERM EXIT
   echo ""
   echo "// shutting down"
-  # Workerd detaches from its spawner (vite → @cloudflare/vite-plugin →
-  # node), so by the time we get here it's re-parented to init. Walking
-  # the PID tree doesn't reach it. Kill by name, but spare any workerd
-  # that was already running before we started. Fall back to anything
-  # still holding the vite port.
+  # Kill our own process group — hits pnpm, node, vite, and anything else
+  # in the tree. The leading `-` on the PID tells kill to address the PGID.
+  if [ -n "${DEV_PID:-}" ]; then
+    kill -TERM "-${DEV_PID}" 2>/dev/null || true
+    # Grace window, then SIGKILL if anything is still alive.
+    sleep 1
+    kill -KILL "-${DEV_PID}" 2>/dev/null || true
+  fi
+  # Delta-clean the detached workerd(s) this run spawned — they don't
+  # live in our PGID because the plugin daemonises them.
   local after
   after=$(pgrep -f workerd 2>/dev/null || true)
   for pid in $after; do
@@ -69,14 +78,12 @@ cleanup() {
       *) kill -9 "$pid" 2>/dev/null || true ;;
     esac
   done
-  pkill -f "vite" 2>/dev/null || true
-  pkill -f "wrangler dev" 2>/dev/null || true
-  lsof -ti:5173 2>/dev/null | xargs -r kill -9 2>/dev/null || true
   exit 0
 }
 # EXIT fires for any exit path, including SIGPIPE from a dead pipeline reader
 # (e.g. `./run.sh | grep ...` where grep is killed first).
 trap cleanup INT TERM EXIT
 
-pnpm dev
-wait
+pnpm dev &
+DEV_PID=$!
+wait "$DEV_PID"
