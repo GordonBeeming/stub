@@ -1,0 +1,151 @@
+/* Design tokens — see DESIGN.md §2.1 and §9.
+ *
+ * Dark is the default. `@media (prefers-color-scheme: light)` picks up when
+ * the system asks for light and the user has no explicit preference. A
+ * `data-theme="dark" | "light"` attribute on <html> overrides either way;
+ * consumer apps set it before first paint via a tiny inline script so there's
+ * no flash of wrong theme.
+ */
+
+:root {
+  /* Surfaces — darker first (dark mode default). */
+  --bg: #1a1a1a;
+  --bg-2: #222228;
+  --bg-3: #2c2c2c;
+  --bg-deep: #0e0e10;
+
+  /* Lines */
+  --line: #3a3a42;
+  --line-soft: #2c2c2c;
+
+  /* Text — primary to tertiary */
+  --text: #e0e0e0;
+  --text-2: #d1d5db;
+  --text-3: #9ca3af;
+
+  /* Brand */
+  --primary: #46cbff;
+  --primary-dim: #2b8aab;
+  --accent: #0063b2;
+
+  /* Semantic */
+  --danger: #f87171;
+  --success: #4ade80;
+
+  /* Typography stacks */
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+
+  /* Radii */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Layout */
+  --wrap-max: 920px;
+  --wrap-px: 32px;
+  --wrap-px-sm: 20px;
+
+  /* Component internals */
+  --pad-cell-y: 20px;
+  --pad-cell-x: 24px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f8f9fa;
+    --bg-2: #ffffff;
+    --bg-3: #e9ecef;
+    --bg-deep: #e4e6ea;
+    --line: #d4d7dc;
+    --line-soft: #e9ecef;
+    --text: #1a1a1a;
+    --text-2: #374151;
+    --text-3: #6b7280;
+    --primary: #0063b2;
+    --primary-dim: #0075a3;
+    --accent: #0075a3;
+    --danger: #b91c1c;
+    --success: #15803d;
+  }
+}
+
+/* Explicit user choice wins over system preference. */
+[data-theme='dark'] {
+  --bg: #1a1a1a;
+  --bg-2: #222228;
+  --bg-3: #2c2c2c;
+  --bg-deep: #0e0e10;
+  --line: #3a3a42;
+  --line-soft: #2c2c2c;
+  --text: #e0e0e0;
+  --text-2: #d1d5db;
+  --text-3: #9ca3af;
+  --primary: #46cbff;
+  --primary-dim: #2b8aab;
+  --accent: #0063b2;
+  --danger: #f87171;
+  --success: #4ade80;
+}
+
+[data-theme='light'] {
+  --bg: #f8f9fa;
+  --bg-2: #ffffff;
+  --bg-3: #e9ecef;
+  --bg-deep: #e4e6ea;
+  --line: #d4d7dc;
+  --line-soft: #e9ecef;
+  --text: #1a1a1a;
+  --text-2: #374151;
+  --text-3: #6b7280;
+  --primary: #0063b2;
+  --primary-dim: #0075a3;
+  --accent: #0075a3;
+  --danger: #b91c1c;
+  --success: #15803d;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  /* Grid + radial-gradient ornament. Tints key off tokens via color-mix so
+   * the ornament re-themes automatically when data-theme flips. */
+  background-image:
+    radial-gradient(circle at 15% 20%, color-mix(in oklab, var(--primary) 6%, transparent), transparent 40%),
+    radial-gradient(circle at 85% 80%, color-mix(in oklab, var(--accent) 4%, transparent), transparent 40%),
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size:
+    auto,
+    auto,
+    48px 48px,
+    48px 48px;
+  background-position:
+    0 0,
+    0 0,
+    -1px -1px,
+    -1px -1px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

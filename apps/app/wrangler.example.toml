@@ -1,0 +1,71 @@
+# Copy to wrangler.toml and fill in the IDs. Secrets are NOT stored here —
+# set them with `wrangler secret put <NAME>` (see list at bottom).
+
+name = "stub"
+# Custom entry wraps .open-next/worker.js so we can add a scheduled() handler
+# alongside fetch — see worker-entry.ts.
+main = "./worker-entry.ts"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Static assets bundled by @opennextjs/cloudflare.
+assets = { directory = ".open-next/assets", binding = "ASSETS" }
+
+# --- Bindings ---------------------------------------------------------------
+
+[[d1_databases]]
+binding = "DB"
+database_name = "stub"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "0000000000000000000000000000000000000000000000000000000000000000"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "0000000000000000000000000000000000000000000000000000000000000000"
+
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "stub-backups"
+
+# Turnstile binding (widget-based verification uses secret server-side; the
+# site key goes in the var below so client components can read it).
+# No native `[[turnstile]]` binding exists yet — we call the siteverify API.
+
+# --- Vars (non-secret) ------------------------------------------------------
+
+[vars]
+OWNER_EMAIL = "owner@example.com"
+RESEND_FROM = "stub@example.com"
+SITE_URL = "https://stub.example.com"
+TURNSTILE_SITE_KEY = "1x00000000000000000000AA"  # Cloudflare always-pass test key; swap to your real one in production
+
+# --- Scheduled triggers -----------------------------------------------------
+
+[triggers]
+crons = ["0 3 * * *"] # daily 03:00 UTC: prune expired rows, back up D1 to R2
+
+# --- Observability ----------------------------------------------------------
+# Enables log capture in the Cloudflare dashboard (Workers > stub > Logs) and
+# lets `wrangler tail` stream live logs. Free-tier quota is generous.
+# In prod lower head_sampling_rate (e.g. 0.1 = keep 10% of invocations) to
+# stay under the retention window if traffic grows.
+[observability]
+enabled = true
+head_sampling_rate = 1.0
+
+# --- Secrets (set via `wrangler secret put <NAME>`) ------------------------
+# SESSION_SECRET     - HS256 signing key for session JWTs (>= 32 bytes random)
+# SESSION_SECRET_PREV - optional; set only during a rotation window so cookies
+#                       signed with the old key keep verifying. Delete once the
+#                       rotation window is over (see setup guide §11).
+# RESEND_API_KEY     - Resend API key for magic-link emails
+# TURNSTILE_SECRET   - Cloudflare Turnstile server-side secret
+# IP_HASH_SALT       - Rotating salt for IP hashes in audit/link_clicks
+
+# --- Environments -----------------------------------------------------------
+# Define [env.production] / [env.preview] overrides here if you want separate
+# D1/KV IDs per environment.

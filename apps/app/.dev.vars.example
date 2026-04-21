@@ -1,0 +1,5 @@
+# Copy to .dev.vars for local `wrangler dev` / `next dev`. NEVER commit .dev.vars.
+SESSION_SECRET="change-me-to-a-long-random-string-at-least-32-bytes"
+RESEND_API_KEY="re_xxxxxxxxxxxxxxxxxxxxx"
+TURNSTILE_SECRET="1x0000000000000000000000000000000AA"
+IP_HASH_SALT="change-me-rotate-periodically"
