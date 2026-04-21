@@ -27,9 +27,14 @@ id = "0000000000000000000000000000000000000000000000000000000000000000"
 binding = "RATE_LIMIT"
 id = "0000000000000000000000000000000000000000000000000000000000000000"
 
-[[r2_buckets]]
-binding = "BACKUPS"
-bucket_name = "stub-backups"
+# Optional: R2 for nightly JSONL backups of every D1 table.
+# Enabling R2 on a Cloudflare account requires a payment method on file
+# even though the free tier covers a personal stub workload.
+# If you want backups: `npx wrangler r2 bucket create stub-backups` and
+# uncomment the block below, then redeploy.
+# [[r2_buckets]]
+# binding = "BACKUPS"
+# bucket_name = "stub-backups"
 
 # Turnstile binding (widget-based verification uses secret server-side; the
 # site key goes in the var below so client components can read it).
@@ -46,7 +51,9 @@ TURNSTILE_SITE_KEY = "1x00000000000000000000AA"  # Cloudflare always-pass test k
 # --- Scheduled triggers -----------------------------------------------------
 
 [triggers]
-crons = ["0 3 * * *"] # daily 03:00 UTC: prune expired rows, back up D1 to R2
+# Daily 03:00 UTC: prune expired rows. Also backs up D1 to R2 if the BACKUPS
+# bucket is bound above; skipped silently otherwise so the cron still prunes.
+crons = ["0 3 * * *"]
 
 # --- Observability ----------------------------------------------------------
 # Enables log capture in the Cloudflare dashboard (Workers > stub > Logs) and

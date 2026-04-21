@@ -1,4 +1,4 @@
-import { CLIBlock, Feat, FeatGrid, Token } from '@gordonbeeming/design-system';
+import { CLIBlock, Feat, FeatGrid, SectionHeader, Token } from '@gordonbeeming/design-system';
 
 export const metadata = {
   title: 'stub — setup guide',
@@ -40,20 +40,42 @@ const body: React.CSSProperties = {
 
 const section: React.CSSProperties = { margin: '64px 0' };
 
+const linkStyle: React.CSSProperties = {
+  color: 'var(--primary)',
+  textDecoration: 'none',
+  borderBottom: '1px solid var(--primary-dim)',
+};
+
+// Cloudflare dashboard deeplinks. The `?to=/:account/...` query auto-routes
+// to whichever Cloudflare account the user is signed in to, so no GUID is
+// hard-coded — every forker gets the right page.
+const CF_TURNSTILE = 'https://dash.cloudflare.com/?to=/:account/turnstile';
+const CF_R2 = 'https://dash.cloudflare.com/?to=/:account/r2/overview';
+const CF_WORKERS = 'https://dash.cloudflare.com/?to=/:account/workers/overview';
+const RESEND_KEYS = 'https://resend.com/api-keys';
+
+function ExtLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} rel="noopener noreferrer" target="_blank" style={linkStyle}>
+      {children}
+    </a>
+  );
+}
+
 export default function SetupGuidePage() {
   return (
     <>
       <header style={{ padding: '24px 0 48px' }}>
         <h1 style={pageTitle}>Ship your own stub on your own Cloudflare.</h1>
         <p style={lead}>
-          Roughly twenty minutes from a fresh clone to your first link. You&apos;ll need Node
-          20+ and pnpm, a Cloudflare account with a domain attached, and the email you want to
-          sign in with.
+          Ten numbered steps, roughly twenty minutes end-to-end. You&apos;ll need Node 20+ and
+          pnpm, a Cloudflare account with a domain attached, and the email you want to sign in
+          with.
         </p>
       </header>
 
       <section style={section}>
-        <h2 style={sectionTitle}>Prerequisites</h2>
+        <SectionHeader num="01">prerequisites</SectionHeader>
         <FeatGrid>
           <Feat variant="primary" title="Node 20+ and pnpm 9+">
             <Token>node -v</Token> and <Token>pnpm -v</Token> to check. If pnpm isn&apos;t
@@ -61,7 +83,7 @@ export default function SetupGuidePage() {
           </Feat>
           <Feat variant="alt" title="Cloudflare account">
             Any tier. The free plan covers a personal workload without close calls. Workers, D1,
-            KV, R2, and Turnstile are all on by default.
+            KV, and Turnstile are all on by default.
           </Feat>
           <Feat variant="primary" title="Domain on Cloudflare">
             The domain lives in your Cloudflare account so you can point a Worker route at it. A
@@ -76,7 +98,7 @@ export default function SetupGuidePage() {
       </section>
 
       <section style={section}>
-        <h2 style={sectionTitle}>Fork and install</h2>
+        <SectionHeader num="02">fork and install</SectionHeader>
         <p style={body}>Fork on GitHub, clone your fork, install the workspace.</p>
         <CLIBlock
           lines={[
@@ -89,39 +111,83 @@ export default function SetupGuidePage() {
       </section>
 
       <section style={section}>
-        <h2 style={sectionTitle}>Provision the Cloudflare resources</h2>
+        <SectionHeader num="03">create a turnstile site</SectionHeader>
         <p style={body}>
-          Log in with <Token>wrangler login</Token>, then run the commands below. Each one
-          prints an ID or confirms a bucket; paste every ID into the matching binding in{' '}
-          <Token bare>apps/app/wrangler.toml</Token>.
+          Turnstile is a web widget, not a wrangler resource. It goes on the magic-link form to
+          stop bots from burning through the rate limit. Create one in the Cloudflare
+          dashboard:{' '}
+          <ExtLink href={CF_TURNSTILE}>dash.cloudflare.com → Turnstile</ExtLink>.
+        </p>
+        <p style={body}>
+          When you create the site, Cloudflare gives you a <em>site key</em> (public, goes in{' '}
+          <Token bare>TURNSTILE_SITE_KEY</Token> in step 08) and a <em>secret</em> (private,
+          goes in the <Token bare>TURNSTILE_SECRET</Token> wrangler secret in step 07). Keep
+          both somewhere you can paste from; you&apos;ll need them two steps from now.
+        </p>
+      </section>
+
+      <section style={section}>
+        <SectionHeader num="04">provision the cloudflare resources</SectionHeader>
+        <p style={body}>
+          Log in with <Token>wrangler login</Token>, then create one D1 database and two KV
+          namespaces. Each command prints the ID you need for step 05.
         </p>
         <CLIBlock
           lines={[
             { kind: 'cmd', text: 'cd apps/app' },
             { kind: 'cmd', text: 'npx wrangler login' },
             { kind: 'comment', text: '' },
+            { kind: 'comment', text: '# D1 — copy the returned database_id into [[d1_databases]]' },
             { kind: 'cmd', text: 'npx wrangler d1 create stub' },
+            { kind: 'comment', text: '' },
+            { kind: 'comment', text: '# KV — copy each returned id into its [[kv_namespaces]] block' },
             { kind: 'cmd', text: 'npx wrangler kv namespace create SESSIONS' },
             { kind: 'cmd', text: 'npx wrangler kv namespace create RATE_LIMIT' },
-            { kind: 'cmd', text: 'npx wrangler r2 bucket create stub-backups' },
+          ]}
+        />
+      </section>
+
+      <section style={section}>
+        <SectionHeader num="05">paste the ids into wrangler.toml</SectionHeader>
+        <p style={body}>
+          Each <Token>create</Token> command above prints the binding block you need. The
+          template file already has each block with a zeroed placeholder; swap the placeholder
+          for the real value wrangler returned. For D1 it looks like this:
+        </p>
+        <CLIBlock
+          lines={[
+            { kind: 'comment', text: '# before' },
+            { kind: 'cmd', text: '[[d1_databases]]' },
+            { kind: 'cmd', text: 'binding = "DB"' },
+            { kind: 'cmd', text: 'database_name = "stub"' },
+            { kind: 'cmd', text: 'database_id = "00000000-0000-0000-0000-000000000000"' },
+            { kind: 'cmd', text: 'migrations_dir = "migrations"' },
+            { kind: 'comment', text: '' },
+            { kind: 'comment', text: '# after — real database_id pasted' },
+            { kind: 'cmd', text: '[[d1_databases]]' },
+            { kind: 'cmd', text: 'binding = "DB"' },
+            { kind: 'cmd', text: 'database_name = "stub"' },
+            { kind: 'cmd', text: 'database_id = "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"' },
+            { kind: 'cmd', text: 'migrations_dir = "migrations"' },
           ]}
         />
         <p style={{ ...body, marginTop: 16 }}>
-          Turnstile is a web widget, not a wrangler resource. Create a site in the Cloudflare
-          dashboard under <Token bare>Turnstile</Token> and hold onto the site key and secret
-          for the next step.
+          Do the same for each <Token bare>[[kv_namespaces]]</Token> block: replace the zeroed{' '}
+          <Token bare>id</Token> with the <Token bare>id</Token> wrangler printed when you
+          created that namespace.
         </p>
       </section>
 
       <section style={section}>
-        <h2 style={sectionTitle}>Apply the schema</h2>
+        <SectionHeader num="06">apply the schema</SectionHeader>
         <p style={body}>
-          There&apos;s a single migration at{' '}
-          <Token bare>apps/app/migrations/001_init.sql</Token> that creates every table. Apply
-          it to your real D1.
+          One migration at <Token bare>apps/app/migrations/001_init.sql</Token> creates every
+          table. Apply it to your real D1.
         </p>
         <CLIBlock
           lines={[
+            { kind: 'comment', text: '# wrangler commands run from apps/app where wrangler.toml lives' },
+            { kind: 'cmd', text: 'cd apps/app' },
             { kind: 'cmd', text: 'npx wrangler d1 migrations apply DB --remote' },
           ]}
         />
@@ -132,25 +198,70 @@ export default function SetupGuidePage() {
       </section>
 
       <section style={section}>
-        <h2 style={sectionTitle}>Secrets and vars</h2>
+        <SectionHeader num="07">secrets</SectionHeader>
         <p style={body}>
-          Secrets never live in <Token bare>wrangler.toml</Token>. Set each one with{' '}
-          <Token>wrangler secret put</Token>. Vars (non-secret config) go in the file itself
-          under <Token bare>[vars]</Token>.
+          Secrets never live in <Token bare>wrangler.toml</Token>. You set each one with{' '}
+          <Token>wrangler secret put</Token>. The command is interactive: you run it, wrangler
+          prompts <Token bare>? Enter a secret value:</Token>, you paste the value, press
+          Enter. Your keystrokes are hidden, so an empty-looking line while you paste is
+          normal.
+        </p>
+        <p style={{ ...body, marginTop: 16 }}>
+          Two of the secrets are random strings you generate locally. One command, two uses:
         </p>
         <CLIBlock
           lines={[
-            { kind: 'cmd', text: 'npx wrangler secret put SESSION_SECRET' },
-            { kind: 'comment', text: '# 32+ random bytes; `openssl rand -hex 32` is fine' },
-            { kind: 'cmd', text: 'npx wrangler secret put RESEND_API_KEY' },
-            { kind: 'cmd', text: 'npx wrangler secret put TURNSTILE_SECRET' },
-            { kind: 'cmd', text: 'npx wrangler secret put IP_HASH_SALT' },
-            { kind: 'comment', text: '# any random string; rotating it anonymises older click data' },
+            { kind: 'comment', text: '# random 32-byte hex for SESSION_SECRET and IP_HASH_SALT' },
+            { kind: 'cmd', text: 'openssl rand -hex 32' },
           ]}
         />
-        <p style={{ ...body, marginTop: 16, marginBottom: 8 }}>
-          Then open <Token bare>apps/app/wrangler.toml</Token> and set each value in{' '}
-          <Token bare>[vars]</Token> for your setup:
+        <p style={{ ...body, marginTop: 16 }}>A sample interaction looks like this:</p>
+        <CLIBlock
+          lines={[
+            { kind: 'cmd', text: '$ npx wrangler secret put SESSION_SECRET' },
+            { kind: 'out', text: '? Enter a secret value:  ... (hidden — paste, then enter)' },
+            { kind: 'out', text: '✨ Success! Uploaded secret SESSION_SECRET' },
+          ]}
+        />
+        <p style={{ ...body, marginTop: 16 }}>
+          First time through, the first <Token>wrangler secret put</Token> has one extra
+          prompt: <Token bare>There doesn&apos;t seem to be a Worker called &quot;stub&quot;.
+          Do you want to create a new Worker with that name?</Token> Answer yes. Workers
+          on Cloudflare are created lazily, so the secret you&apos;re uploading needs
+          somewhere to live. Wrangler spins up an empty Worker record to hold it, and
+          your code lands in the same Worker when you deploy later.
+        </p>
+        <p style={{ ...body, marginTop: 16 }}>
+          Do it four times, once per secret. Values come from:
+        </p>
+        <CLIBlock
+          lines={[
+            { kind: 'cmd', text: 'cd apps/app' },
+            { kind: 'comment', text: '# SESSION_SECRET — paste a fresh `openssl rand -hex 32` value' },
+            { kind: 'cmd', text: 'npx wrangler secret put SESSION_SECRET' },
+            { kind: 'comment', text: '' },
+            { kind: 'comment', text: '# RESEND_API_KEY — from resend.com/api-keys' },
+            { kind: 'cmd', text: 'npx wrangler secret put RESEND_API_KEY' },
+            { kind: 'comment', text: '' },
+            { kind: 'comment', text: '# TURNSTILE_SECRET — the secret from the Turnstile site in step 03' },
+            { kind: 'cmd', text: 'npx wrangler secret put TURNSTILE_SECRET' },
+            { kind: 'comment', text: '' },
+            { kind: 'comment', text: '# IP_HASH_SALT — another `openssl rand -hex 32` value' },
+            { kind: 'cmd', text: 'npx wrangler secret put IP_HASH_SALT' },
+          ]}
+        />
+        <p style={{ ...body, marginTop: 16 }}>
+          Your Resend API key lives at{' '}
+          <ExtLink href={RESEND_KEYS}>resend.com/api-keys</ExtLink>. The Turnstile secret is
+          the one Cloudflare printed when you created the site in step 03.
+        </p>
+      </section>
+
+      <section style={section}>
+        <SectionHeader num="08">vars</SectionHeader>
+        <p style={body}>
+          Non-secret config lives in <Token bare>apps/app/wrangler.toml</Token> under{' '}
+          <Token bare>[vars]</Token>. Open the file and set each value for your setup:
         </p>
         <CLIBlock
           lines={[
@@ -160,32 +271,42 @@ export default function SetupGuidePage() {
             { kind: 'cmd', text: 'TURNSTILE_SITE_KEY   = "0x4AAA..."' },
           ]}
         />
+        <p style={{ ...body, marginTop: 12 }}>
+          <Token bare>TURNSTILE_SITE_KEY</Token> is the public site key from step 03 (different
+          value from the secret you just uploaded).
+        </p>
       </section>
 
       <section style={section}>
-        <h2 style={sectionTitle}>Build and deploy</h2>
+        <SectionHeader num="09">build and deploy</SectionHeader>
         <p style={body}>
-          <Token>opennextjs-cloudflare build</Token> compiles the Next app for a Worker.{' '}
-          <Token>deploy</Token> pushes it.
+          One command builds the Worker bundle and pushes it.
         </p>
         <CLIBlock
           lines={[
-            { kind: 'comment', text: '# from the repo root' },
-            { kind: 'cmd', text: 'pnpm build' },
             { kind: 'cmd', text: 'cd apps/app' },
-            { kind: 'cmd', text: 'npx opennextjs-cloudflare build' },
-            { kind: 'cmd', text: 'npx opennextjs-cloudflare deploy' },
+            { kind: 'cmd', text: 'pnpm cf:deploy' },
           ]}
         />
+        <p style={{ ...body, marginTop: 12 }}>
+          <Token bare>cf:deploy</Token> is defined in <Token bare>apps/app/package.json</Token>{' '}
+          as <Token bare>opennextjs-cloudflare build &amp;&amp; opennextjs-cloudflare deploy</Token>.
+          Running both through one script in one shell keeps them in sync; running them by hand as
+          separate commands leaves room for <Token bare>.open-next/</Token> to end up in a
+          half-built state that wrangler then refuses to deploy.
+        </p>
         <p style={{ ...body, marginTop: 16 }}>
-          In the Cloudflare dashboard, map <Token bare>stub.yourdomain.com/*</Token> to the
-          Worker. The daily cron trigger picks itself up from{' '}
-          <Token bare>wrangler.toml</Token> once the Worker is live.
+          The first deploy fills in the empty Worker record you created back in step 07.
+          Finally, map a route to it:{' '}
+          <ExtLink href={CF_WORKERS}>dash.cloudflare.com → Workers &amp; Pages</ExtLink>, open
+          the <Token bare>stub</Token> Worker, and add a route for{' '}
+          <Token bare>stub.yourdomain.com/*</Token>. The daily cron trigger picks itself up
+          from <Token bare>wrangler.toml</Token> once the Worker is live.
         </p>
       </section>
 
       <section style={section}>
-        <h2 style={sectionTitle}>First login</h2>
+        <SectionHeader num="10">first login</SectionHeader>
         <p style={body}>
           Visit <Token bare>https://stub.yourdomain.com/login</Token>, enter the address you
           set as <Token bare>OWNER_EMAIL</Token>, and you&apos;ll get a magic link by email.
@@ -238,6 +359,31 @@ export default function SetupGuidePage() {
       </section>
 
       <section style={section}>
+        <h2 style={sectionTitle}>Optional: R2 for nightly backups</h2>
+        <p style={body}>
+          Stub runs fine without R2. Turn it on if you want a JSONL dump of every D1 table
+          written to an R2 bucket once a day for disaster recovery. Heads up: enabling R2 on
+          a Cloudflare account requires a payment method on file, even though the free tier
+          covers a personal workload. If that&apos;s a blocker, skip this and come back later.
+        </p>
+        <p style={body}>
+          Create the bucket via the dashboard or the CLI:{' '}
+          <ExtLink href={CF_R2}>dash.cloudflare.com → R2</ExtLink>.
+        </p>
+        <CLIBlock
+          lines={[
+            { kind: 'cmd', text: 'cd apps/app' },
+            { kind: 'cmd', text: 'npx wrangler r2 bucket create stub-backups' },
+          ]}
+        />
+        <p style={{ ...body, marginTop: 12 }}>
+          Then uncomment the <Token bare>[[r2_buckets]]</Token> block in{' '}
+          <Token bare>apps/app/wrangler.toml</Token> and redeploy. The cron will start writing
+          a daily dump at <Token bare>backups/YYYY-MM-DD/stub.jsonl</Token>.
+        </p>
+      </section>
+
+      <section style={section}>
         <h2 style={sectionTitle}>Rotating the session secret</h2>
         <p style={body}>
           Swapping <Token bare>SESSION_SECRET</Token> by itself signs every browser out. To
@@ -271,13 +417,9 @@ export default function SetupGuidePage() {
         <h2 style={sectionTitle}>License and feedback</h2>
         <p style={body}>
           MIT, at{' '}
-          <a
-            href="https://github.com/GordonBeeming/stub"
-            rel="noopener noreferrer"
-            style={{ color: 'var(--primary)', textDecoration: 'none', borderBottom: '1px solid var(--primary-dim)' }}
-          >
+          <ExtLink href="https://github.com/GordonBeeming/stub">
             github.com/GordonBeeming/stub
-          </a>
+          </ExtLink>
           . File an issue if the guide drifts from the code or a step silently breaks after a
           Cloudflare platform change. Pull requests welcome.
         </p>
