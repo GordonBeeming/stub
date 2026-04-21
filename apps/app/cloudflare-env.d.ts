@@ -6,7 +6,7 @@ interface CloudflareEnv {
   DB: D1Database;
   SESSIONS: KVNamespace;
   RATE_LIMIT: KVNamespace;
-  BACKUPS: R2Bucket;
+  BACKUPS?: R2Bucket;
   ASSETS: Fetcher;
 
   // Vars

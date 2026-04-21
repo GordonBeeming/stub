@@ -62,29 +62,36 @@ export async function runDailyCron(env: CloudflareEnv): Promise<CronResult> {
   const pruned: CronPruneCounts = { magicTokens, expiredNotes, readNotes, expiredLinks };
 
   let backup: CronBackupResult | null = null;
-  const dumpAt = Math.floor(Date.now() / 1000);
-  const stamp = utcDateStamp(new Date(dumpAt * 1000));
-  const objectKey = `backups/${stamp}/stub.jsonl`;
 
-  try {
-    const body = await buildBackupBody(db, dumpAt);
-    const bytes = new TextEncoder().encode(body).byteLength;
-    // Skip gzip for now: workerd's CompressionStream round-trip adds plumbing
-    // the first backup doesn't need. Revisit once dumps get big enough to
-    // matter on egress or R2 storage cost.
-    await env.BACKUPS.put(objectKey, body, {
-      httpMetadata: { contentType: 'application/x-ndjson' },
-      customMetadata: { dumpAt: String(dumpAt) },
-    });
-    backup = { objectKey, bytes };
-  } catch (err) {
-    // Record the failure in audit rather than letting the whole cron die —
-    // prune counts above are already persisted and worth knowing about.
-    await logAudit(db, {
-      actor: null,
-      action: 'cron.backup.error',
-      meta: { error: err instanceof Error ? err.message : String(err), objectKey },
-    });
+  // R2 is optional — stub runs without it. If no bucket is bound, skip the
+  // backup step silently. Prune already ran and the audit entry below still
+  // records the run so you can confirm the cron fired.
+  if (env.BACKUPS) {
+    const bucket = env.BACKUPS;
+    const dumpAt = Math.floor(Date.now() / 1000);
+    const stamp = utcDateStamp(new Date(dumpAt * 1000));
+    const objectKey = `backups/${stamp}/stub.jsonl`;
+
+    try {
+      const body = await buildBackupBody(db, dumpAt);
+      const bytes = new TextEncoder().encode(body).byteLength;
+      // Skip gzip for now: workerd's CompressionStream round-trip adds plumbing
+      // the first backup doesn't need. Revisit once dumps get big enough to
+      // matter on egress or R2 storage cost.
+      await bucket.put(objectKey, body, {
+        httpMetadata: { contentType: 'application/x-ndjson' },
+        customMetadata: { dumpAt: String(dumpAt) },
+      });
+      backup = { objectKey, bytes };
+    } catch (err) {
+      // Record the failure in audit rather than letting the whole cron die —
+      // prune counts above are already persisted and worth knowing about.
+      await logAudit(db, {
+        actor: null,
+        action: 'cron.backup.error',
+        meta: { error: err instanceof Error ? err.message : String(err), objectKey },
+      });
+    }
   }
 
   await logAudit(db, {

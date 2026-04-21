@@ -35,8 +35,10 @@ cd apps/app
 npx wrangler d1 create stub                             # note the database_id
 npx wrangler kv namespace create SESSIONS               # note the id
 npx wrangler kv namespace create RATE_LIMIT             # note the id
-npx wrangler r2 bucket create stub-backups
 # paste the IDs into wrangler.toml
+# Optional: enable R2 for nightly backups. Requires a payment method on the
+# Cloudflare account even though free tier covers a personal workload.
+# See /stub/setup for the full walkthrough.
 
 # 4. apply the D1 schema
 npx wrangler d1 migrations apply DB --remote
