@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stub — design system showcase</title>
+    <!-- Showcase only: Google Fonts for preview. Production consumers import via
+         @gordonbeeming/design-system/fonts (Fontsource). Keep this fallback in
+         sync with the three families listed in tokens.css. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../src/tokens.css" />
+    <link rel="stylesheet" href="../src/components/styles.css" />
+  </head>
+  <body>
+    <div class="ds-wrap">
+      <!-- PageHeader -->
+      <header class="ds-page-header">
+        <div class="ds-page-header__brand">// <b>GordonBeeming</b> · pitch document</div>
+        <div class="ds-page-header__meta">v0.1 · draft</div>
+      </header>
+
+      <!-- Hero -->
+      <div class="ds-hero">
+        <span class="ds-hero__eyebrow">proposal</span>
+        <h1 class="ds-hero__title">
+          stub<span class="ds-hero__cursor" aria-hidden="true">.</span><br />
+          <i>a short link &amp; secret note service,</i><br />
+          <i>self-hosted on cloudflare.</i>
+        </h1>
+        <p class="ds-hero__tagline">
+          <span class="ds-comment">// open source, single-tenant, passkey-auth'd.</span><br />
+          one <code class="ds-token ds-token--bare">wrangler deploy</code>, one email, one user —
+          you.<br />
+          <span class="ds-comment"
+            >// runs indefinitely on the cloudflare free tier for a personal-scale workload.</span
+          >
+        </p>
+      </div>
+
+      <!-- 01 why build this -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">01</span><span>why build this</span>
+        </h2>
+        <p class="ds-prose">
+          Most short-link and burn-note services run in someone else's tenant, behind someone
+          else's account model. If you already have a domain and a Cloudflare account, this is a
+          weekend of work and <code class="ds-token ds-token--bare">$0/month</code> forever.
+        </p>
+
+        <div class="ds-problem">
+          <div class="ds-problem__side">
+            <div class="ds-problem__label ds-problem__label--vs">// Existing tools</div>
+            <p class="ds-problem__body">
+              Hosted services want an account you didn't ask for. Self-hosted alternatives tend
+              to need a VPS. Cloudflare redirect rules hard-code destinations with no UI, no
+              stats, no notes.
+            </p>
+          </div>
+          <div class="ds-problem__side">
+            <div class="ds-problem__label ds-problem__label--us">// stub</div>
+            <p class="ds-problem__body">
+              Deploy to your account, point your domain at it, passkey-log-in as the only user.
+              Create short links. Burn notes. Done. Anyone can fork and stand up their own in ~10
+              minutes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 name candidates -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">02</span><span>name candidates</span>
+        </h2>
+        <p class="ds-prose ds-prose--tight">
+          Short, technical, lowercase. All domains need checking — ranked by my gut.
+        </p>
+
+        <div class="ds-names">
+          <div class="ds-name-row ds-name-row--featured">
+            <div class="ds-name-row__word">stub<span class="ds-name-row__tld">.sh</span></div>
+            <div class="ds-name-row__desc">
+              A link stub, a note stub — both are small remnants that get created, used, and
+              discarded. Short, real English word, lowercase-friendly. Works as both verb and noun.
+            </div>
+            <div class="ds-name-row__badge ds-name-row__badge--top">top pick</div>
+          </div>
+          <div class="ds-name-row">
+            <div class="ds-name-row__word">beem<span class="ds-name-row__tld">.link</span></div>
+            <div class="ds-name-row__desc">
+              Plays off your surname, subtle rather than loud. A &ldquo;beem&rdquo; of a link across
+              the wire. Personal branding without being on-the-nose.
+            </div>
+            <div class="ds-name-row__badge ds-name-row__badge--alt">personal</div>
+          </div>
+          <div class="ds-name-row">
+            <div class="ds-name-row__word">ephem<span class="ds-name-row__tld">.link</span></div>
+            <div class="ds-name-row__desc">
+              Short for ephemeral — captures the core idea of both features (short-lived redirects,
+              burn-after-read notes). Slightly more literary than stub.
+            </div>
+            <div class="ds-name-row__badge ds-name-row__badge--alt">descriptive</div>
+          </div>
+          <div class="ds-name-row">
+            <div class="ds-name-row__word">onepass<span class="ds-name-row__tld">.to</span></div>
+            <div class="ds-name-row__desc">
+              One-time pass — works for both a link pass-through and a single-view note. Could
+              collide mentally with 1Password.
+            </div>
+            <div class="ds-name-row__badge ds-name-row__badge--alt">viable</div>
+          </div>
+          <div class="ds-name-row">
+            <div class="ds-name-row__word">crumb<span class="ds-name-row__tld">.sh</span></div>
+            <div class="ds-name-row__desc">
+              A crumb gets left behind, then eaten. Playful, memorable, slightly off-beat. Good if
+              you want personality.
+            </div>
+            <div class="ds-name-row__badge ds-name-row__badge--quirky">fun</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 one app, or two? -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">03</span><span>one app, or two?</span>
+        </h2>
+
+        <div class="ds-decision">
+          <span class="ds-decision__label">VERDICT</span>
+          <h3 class="ds-decision__title">One app. Ship them together.</h3>
+          <p class="ds-decision__body">
+            <strong>Both features are the same primitive:</strong> a short random key that resolves
+            to a stored payload, optionally with TTL and single-use semantics. A short link is just
+            a note whose payload is
+            <code class="ds-token ds-token--bare">{ type: "redirect", url }</code>. A burn note is
+            <code class="ds-token ds-token--bare"
+              >{ type: "note", ciphertext, burnOnRead: true }</code
+            >.
+          </p>
+          <p class="ds-decision__body">
+            Same D1 schema, same dashboard, same passkey login, same Worker, same deploy. Splitting
+            them doubles your maintenance burden for zero architectural gain. The single-tenant
+            constraint makes it even cleaner — no tenant isolation to worry about.
+          </p>
+        </div>
+      </section>
+
+      <!-- 04 architecture -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">04</span><span>architecture</span>
+        </h2>
+
+        <div class="ds-diagram">
+          <svg
+            viewBox="0 0 820 360"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            class="ds-diagram__svg"
+          >
+            <title>stub architecture on Cloudflare</title>
+            <desc>
+              Browser talks to a single Cloudflare Worker which serves static assets and binds D1,
+              KV, Turnstile, and Email Workers. Email Worker delivers magic links to the owner
+              inbox.
+            </desc>
+            <defs>
+              <marker
+                id="arrow"
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#64646E" />
+              </marker>
+              <marker
+                id="arrow-p"
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#46CBFF" />
+              </marker>
+            </defs>
+
+            <g>
+              <rect
+                x="20"
+                y="140"
+                width="130"
+                height="80"
+                rx="4"
+                fill="#141418"
+                stroke="#2A2A33"
+                stroke-width="1"
+              />
+              <text
+                x="85"
+                y="175"
+                text-anchor="middle"
+                fill="#E8E8EC"
+                font-family="JetBrains Mono, monospace"
+                font-size="13"
+                font-weight="500"
+              >
+                browser
+              </text>
+              <text
+                x="85"
+                y="195"
+                text-anchor="middle"
+                fill="#64646E"
+                font-family="JetBrains Mono, monospace"
+                font-size="10"
+              >
+                owner + visitors
+              </text>
+            </g>
+
+            <g>
+              <rect
+                x="200"
+                y="30"
+                width="420"
+                height="300"
+                rx="6"
+                fill="transparent"
+                stroke="#2A2A33"
+                stroke-width="1"
+                stroke-dasharray="3 3"
+              />
+              <text
+                x="210"
+                y="22"
+                fill="#46CBFF"
+                font-family="JetBrains Mono, monospace"
+                font-size="10"
+                letter-spacing="1.5"
+              >
+                CLOUDFLARE EDGE
+              </text>
+            </g>
+
+            <g>
+              <rect
+                x="230"
+                y="60"
+                width="200"
+                height="70"
+                rx="4"
+                fill="#1A1A20"
+                stroke="#46CBFF"
+                stroke-width="1"
+              />
+              <text
+                x="330"
+                y="88"
+                text-anchor="middle"
+                fill="#46CBFF"
+                font-family="JetBrains Mono, monospace"
+                font-size="13"
+                font-weight="500"
+              >
+                Worker
+              </text>
+              <text
+                x="330"
+                y="108"
+                text-anchor="middle"
+                fill="#9B9BA6"
+                font-family="JetBrains Mono, monospace"
+                font-size="10"
+              >
+                Hono / itty-router
+              </text>
+              <text
+                x="330"
+                y="122"
+                text-anchor="middle"
+                fill="#64646E"
+                font-family="JetBrains Mono, monospace"
+                font-size="9"
+              >
+                / • /s/:id • /n/:id • /api
+              </text>
+            </g>
+
+            <g>
+              <rect
+                x="460"
+                y="60"
+                width="140"
+                height="70"
+                rx="4"
+                fill="#1A1A20"
+                stroke="#2A2A33"
+                stroke-width="1"
+              />
+              <text
+                x="530"
+                y="85"
+                text-anchor="middle"
+                fill="#E8E8EC"
+                font-family="JetBrains Mono, monospace"
+                font-size="12"
+                font-weight="500"
+              >
+                Static Assets
+              </text>
+              <text
+                x="530"
+                y="103"
+                text-anchor="middle"
+                fill="#64646E"
+                font-family="JetBrains Mono, monospace"
+                font-size="10"
+              >
+                SPA + login UI
+              </text>
+              <text
+                x="530"
+                y="118"
+                text-anchor="middle"
+                fill="#64646E"
+                font-family="JetBrains Mono, monospace"
+                font-size="9"
+              >
+                (bundled w/ Worker)
+              </text>
+            </g>
+
+            <g>
+              <rect
+                x="230"
+                y="170"
+                width="170"
+                height="60"
+                rx="4"
+                fill="#1A1A20"
+                stroke="#2A2A33"
+                stroke-width="1"
+              />
+              <text
+                x="315"
+                y="194"
+                text-anchor="middle"
+                fill="#46CBFF"
+                font-family="JetBrains Mono, monospace"
+                font-size="12"
+                font-weight="500"
+              >
+                D1
+              </text>
+              <text
+                x="315"
+                y="212"
+                text-anchor="middle"
+                fill="#9B9BA6"
+                font-family="JetBrains Mono, monospace"
+                font-size="10"
+              >
+                links, notes, passkeys
+              </text>
+              <text
+                x="315"
+                y="224"
+                text-anchor="middle"
+                fill="#64646E"
+                font-family="JetBrains Mono, monospace"
+                font-size="9"
+              >
+                (sqlite @ edge)
+              </text>
+            </g>
+
+            <g>
+              <rect
+                x="430"
+                y="170"
+                width="170"
+                height="60"
+                rx="4"
+                fill="#1A1A20"
+                stroke="#2A2A33"
+                stroke-width="1"
+              />
+              <text
+                x="515"
+                y="194"
+                text-anchor="middle"
+                fill="#46CBFF"
+                font-family="JetBrains Mono, monospace"
+                font-size="12"
+                font-weight="500"
+              >
+                KV
+              </text>
+              <text
+                x="515"
+                y="212"
+                text-anchor="middle"
+                fill="#9B9BA6"
+                font-family="JetBrains Mono, monospace"
+                font-size="10"
+              >
+                sessions, rate-limit
+              </text>
+              <text
+                x="515"
+                y="224"
+                text-anchor="middle"
+                fill="#64646E"
+                font-family="JetBrains Mono, monospace"
+                font-size="9"
+              >
+                (hot, short-TTL)
+              </text>
+            </g>
+
+            <g>
+              <rect
+                x="230"
+                y="260"
+                width="170"
+                height="50"
+                rx="4"
+                fill="#1A1A20"
+                stroke="#2A2A33"
+                stroke-width="1"
+              />
+              <text
+                x="315"
+                y="282"
+                text-anchor="middle"
+                fill="#E8E8EC"
+                font-family="JetBrains Mono, monospace"
+                font-size="12"
+                font-weight="500"
+              >
+                Turnstile
+              </text>
+              <text
+                x="315"
+                y="300"
+                text-anchor="middle"
+                fill="#64646E"
+                font-family="JetBrains Mono, monospace"
+                font-size="10"
+              >
+                public form anti-abuse
+              </text>
+            </g>
+
+            <g>
+              <rect
+                x="430"
+                y="260"
+                width="170"
+                height="50"
+                rx="4"
+                fill="#1A1A20"
+                stroke="#2A2A33"
+                stroke-width="1"
+              />
+              <text
+                x="515"
+                y="282"
+                text-anchor="middle"
+                fill="#E8E8EC"
+                font-family="JetBrains Mono, monospace"
+                font-size="12"
+                font-weight="500"
+              >
+                Email Worker
+              </text>
+              <text
+                x="515"
+                y="300"
+                text-anchor="middle"
+                fill="#64646E"
+                font-family="JetBrains Mono, monospace"
+                font-size="10"
+              >
+                magic-link delivery
+              </text>
+            </g>
+
+            <g>
+              <rect
+                x="670"
+                y="230"
+                width="130"
+                height="80"
+                rx="4"
+                fill="#141418"
+                stroke="#2A2A33"
+                stroke-width="1"
+              />
+              <text
+                x="735"
+                y="265"
+                text-anchor="middle"
+                fill="#E8E8EC"
+                font-family="JetBrains Mono, monospace"
+                font-size="13"
+                font-weight="500"
+              >
+                owner inbox
+              </text>
+              <text
+                x="735"
+                y="285"
+                text-anchor="middle"
+                fill="#64646E"
+                font-family="JetBrains Mono, monospace"
+                font-size="10"
+              >
+                magic link only
+              </text>
+            </g>
+
+            <path
+              d="M 150 180 L 225 95"
+              stroke="#46CBFF"
+              stroke-width="1.2"
+              fill="none"
+              marker-end="url(#arrow-p)"
+            />
+            <path
+              d="M 430 95 L 458 95"
+              stroke="#64646E"
+              stroke-width="1"
+              fill="none"
+              marker-end="url(#arrow)"
+            />
+            <path
+              d="M 330 130 L 320 165"
+              stroke="#64646E"
+              stroke-width="1"
+              fill="none"
+              marker-end="url(#arrow)"
+            />
+            <path
+              d="M 360 130 L 500 165"
+              stroke="#64646E"
+              stroke-width="1"
+              fill="none"
+              marker-end="url(#arrow)"
+            />
+            <path
+              d="M 330 130 L 320 255"
+              stroke="#64646E"
+              stroke-width="1"
+              fill="none"
+              stroke-dasharray="2 2"
+              marker-end="url(#arrow)"
+            />
+            <path
+              d="M 360 130 L 505 255"
+              stroke="#64646E"
+              stroke-width="1"
+              fill="none"
+              stroke-dasharray="2 2"
+              marker-end="url(#arrow)"
+            />
+            <path
+              d="M 600 285 L 665 270"
+              stroke="#64646E"
+              stroke-width="1"
+              fill="none"
+              marker-end="url(#arrow)"
+            />
+          </svg>
+        </div>
+        <p class="ds-diagram__caption">
+          Single Worker binds every resource. Static assets ship in the same bundle. No Pages
+          project, no extra deploys.
+        </p>
+      </section>
+
+      <!-- 05 the stack -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">05</span><span>the stack</span>
+        </h2>
+        <div class="ds-stack">
+          <div class="ds-stack-cell">
+            <div class="ds-stack-cell__svc">Workers</div>
+            <div class="ds-stack-cell__role">API + redirect handler + SSR</div>
+            <div class="ds-stack-cell__usage">
+              runs every request.<br />uses Hono for routing.
+            </div>
+          </div>
+          <div class="ds-stack-cell">
+            <div class="ds-stack-cell__svc">Workers Static Assets</div>
+            <div class="ds-stack-cell__role">SPA frontend</div>
+            <div class="ds-stack-cell__usage">
+              bundled with the Worker.<br />served at
+              <span style="color: var(--primary)">/</span> and
+              <span style="color: var(--primary)">/dashboard</span>.
+            </div>
+          </div>
+          <div class="ds-stack-cell">
+            <div class="ds-stack-cell__svc">D1</div>
+            <div class="ds-stack-cell__role">durable store</div>
+            <div class="ds-stack-cell__usage">
+              tables: links, notes, users,<br />passkeys, magic_tokens, audit.
+            </div>
+          </div>
+          <div class="ds-stack-cell">
+            <div class="ds-stack-cell__svc">Workers KV</div>
+            <div class="ds-stack-cell__role">hot-path cache + sessions</div>
+            <div class="ds-stack-cell__usage">
+              session jwt → user id,<br />per-ip rate limit counters.
+            </div>
+          </div>
+          <div class="ds-stack-cell">
+            <div class="ds-stack-cell__svc">Turnstile</div>
+            <div class="ds-stack-cell__role">bot protection</div>
+            <div class="ds-stack-cell__usage">
+              magic-link request form.
+            </div>
+          </div>
+          <div class="ds-stack-cell">
+            <div class="ds-stack-cell__svc">Email Workers</div>
+            <div class="ds-stack-cell__role">outbound magic links</div>
+            <div class="ds-stack-cell__usage">
+              send via email routing api<br />or MailChannels / Resend.
+            </div>
+          </div>
+          <div class="ds-stack-cell">
+            <div class="ds-stack-cell__svc">Cron Triggers</div>
+            <div class="ds-stack-cell__role">housekeeping</div>
+            <div class="ds-stack-cell__usage">
+              prune expired notes,<br />expired tokens, stale sessions.
+            </div>
+          </div>
+          <div class="ds-stack-cell">
+            <div class="ds-stack-cell__svc">SimpleWebAuthn</div>
+            <div class="ds-stack-cell__role">passkey library</div>
+            <div class="ds-stack-cell__usage">
+              @simplewebauthn/server works<br />out-of-the-box on Workers.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 free-tier budget -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">06</span
+          ><span>free-tier budget — where you live</span>
+        </h2>
+        <div class="ds-budget">
+          <div class="ds-budget-row ds-budget-row--head">
+            <div class="ds-budget-row__svc">service</div>
+            <div class="ds-budget-row__limit">free allowance (daily unless noted)</div>
+            <div class="ds-budget-row__used">typical personal use</div>
+          </div>
+          <div class="ds-budget-row">
+            <div class="ds-budget-row__svc">Workers</div>
+            <div class="ds-budget-row__limit">100,000 requests / day</div>
+            <div class="ds-budget-row__used">&lt; 1%</div>
+          </div>
+          <div class="ds-budget-row">
+            <div class="ds-budget-row__svc">Workers KV</div>
+            <div class="ds-budget-row__limit">100k reads, 1k writes, 1 GB storage</div>
+            <div class="ds-budget-row__used">&lt; 2%</div>
+          </div>
+          <div class="ds-budget-row">
+            <div class="ds-budget-row__svc">D1</div>
+            <div class="ds-budget-row__limit">5M rows read, 100k rows written, 5 GB</div>
+            <div class="ds-budget-row__used">&lt; 1%</div>
+          </div>
+          <div class="ds-budget-row">
+            <div class="ds-budget-row__svc">Static Assets</div>
+            <div class="ds-budget-row__limit">unlimited (bundled with Worker)</div>
+            <div class="ds-budget-row__used">—</div>
+          </div>
+          <div class="ds-budget-row">
+            <div class="ds-budget-row__svc">Turnstile</div>
+            <div class="ds-budget-row__limit">1M siteverify / month</div>
+            <div class="ds-budget-row__used">&lt; 1%</div>
+          </div>
+          <div class="ds-budget-row">
+            <div class="ds-budget-row__svc">Email Routing</div>
+            <div class="ds-budget-row__limit">unlimited inbound, limited outbound</div>
+            <div class="ds-budget-row__used">—</div>
+          </div>
+          <div class="ds-budget-row">
+            <div class="ds-budget-row__svc">Cron Triggers</div>
+            <div class="ds-budget-row__limit">included with Workers free</div>
+            <div class="ds-budget-row__used">—</div>
+          </div>
+        </div>
+        <p class="ds-diagram__caption" style="margin-top: 14px">
+          // at 1000 clicks/day + 50 notes/day you're using a fraction of a percent of the free
+          tier.
+        </p>
+      </section>
+
+      <!-- 07 auth flow -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">07</span
+          ><span>auth flow — single tenant, passkey-first</span>
+        </h2>
+        <p class="ds-prose ds-prose--tight">
+          Configured with a single environment variable:
+          <code class="ds-token">OWNER_EMAIL</code>. Only that address can ever sign in.
+        </p>
+
+        <div class="ds-flow">
+          <div class="ds-flow-step">
+            <span class="ds-flow-step__idx">01 / bootstrap</span>
+            <div class="ds-flow-step__title">Request magic link</div>
+            <div class="ds-flow-step__desc">
+              Owner enters email. Server checks it matches OWNER_EMAIL, mints one-time token to KV
+              (10 min TTL).
+            </div>
+          </div>
+          <div class="ds-flow-step">
+            <span class="ds-flow-step__idx">02 / verify</span>
+            <div class="ds-flow-step__title">Click link in email</div>
+            <div class="ds-flow-step__desc">
+              Token validated, consumed, session issued. Signed JWT in HttpOnly cookie.
+            </div>
+          </div>
+          <div class="ds-flow-step">
+            <span class="ds-flow-step__idx">03 / enroll</span>
+            <div class="ds-flow-step__title">Register passkey</div>
+            <div class="ds-flow-step__desc">
+              First login prompts WebAuthn enrollment — Touch ID, Windows Hello, YubiKey. Stored in
+              D1.
+            </div>
+          </div>
+          <div class="ds-flow-step">
+            <span class="ds-flow-step__idx">04 / return</span>
+            <div class="ds-flow-step__title">Passkey sign-in</div>
+            <div class="ds-flow-step__desc">
+              Subsequent logins skip email. Passkey only. Magic link kept as recovery fallback.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 feature surface -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">08</span><span>feature surface</span>
+        </h2>
+        <div class="ds-feat-grid">
+          <div class="ds-feat">
+            <h3 class="ds-feat__title">Short links</h3>
+            <p class="ds-feat__body">
+              Custom slug or auto-generated nanoid. Optional expiry, max-click limit, click
+              analytics (hashed IP, UA family, referrer).
+            </p>
+          </div>
+          <div class="ds-feat ds-feat--alt">
+            <h3 class="ds-feat__title">Secret notes</h3>
+            <p class="ds-feat__body">
+              Plaintext encrypted <em>client-side</em> with WebCrypto (AES-GCM), key in URL
+              fragment. Server sees only ciphertext.
+            </p>
+          </div>
+          <div class="ds-feat">
+            <h3 class="ds-feat__title">Burn on read</h3>
+            <p class="ds-feat__body">
+              Row deleted on first successful decrypt. TTL-based expiry as a backstop. Cron prunes
+              the floor weekly.
+            </p>
+          </div>
+          <div class="ds-feat ds-feat--alt">
+            <h3 class="ds-feat__title">QR codes</h3>
+            <p class="ds-feat__body">
+              Any link or note URL can be rendered as a QR inline. Useful for sharing in person
+              without typing.
+            </p>
+          </div>
+          <div class="ds-feat">
+            <h3 class="ds-feat__title">Owner dashboard</h3>
+            <p class="ds-feat__body">
+              Create, list, revoke. Realtime click/view stats. Bulk delete. Export to JSONL for
+              backup.
+            </p>
+          </div>
+          <div class="ds-feat ds-feat--alt">
+            <h3 class="ds-feat__title">Public create</h3>
+            <p class="ds-feat__body">
+              Optional mode: anyone can create a burn-note (no login, Turnstile protected). Short
+              links stay owner-only.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 09 standing your own up -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">09</span><span>standing your own up</span>
+        </h2>
+        <p class="ds-prose ds-prose--tight">
+          Whole-repo forker experience. ~10 minutes from clone to live domain.
+        </p>
+        <pre class="ds-cli">
+<span class="c"># clone &amp; configure</span>
+<span class="p">$</span> <span class="d">gh repo fork GordonBeeming/stub --clone</span>
+<span class="p">$</span> <span class="d">cd stub &amp;&amp; pnpm install</span>
+<span class="p">$</span> <span class="d">cp wrangler.example.toml wrangler.toml</span>
+
+<span class="c"># set your single owner email</span>
+<span class="p">$</span> <span class="d">npx wrangler secret put OWNER_EMAIL</span>
+<span class="p">&gt;</span> <span class="s">you@yourdomain.com</span>
+
+<span class="c"># provision resources (one command per)</span>
+<span class="p">$</span> <span class="d">npx wrangler d1 create stub-db</span>
+<span class="p">$</span> <span class="d">npx wrangler kv namespace create SESSIONS</span>
+<span class="p">$</span> <span class="d">npx wrangler d1 execute stub-db --file migrations/001_init.sql</span>
+
+<span class="c"># ship it</span>
+<span class="p">$</span> <span class="d">npx wrangler deploy</span>
+<span class="c"># → https://stub.yourdomain.com   (add route in dashboard)</span></pre>
+      </section>
+
+      <!-- 10 distribution -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">10</span><span>distribution</span>
+        </h2>
+        <div class="ds-oss">
+          <div class="ds-oss__icon" aria-hidden="true">○</div>
+          <div>
+            <h3 class="ds-oss__title">
+              MIT — open source, published under
+              <code class="ds-token ds-token--bare">github.com/GordonBeeming/stub</code>
+            </h3>
+            <p class="ds-oss__body">
+              Single-tenant by design. Every fork is its own deployment. Issues and PRs welcome, but
+              the tool ships &ldquo;done&rdquo; — the constraint of one user keeps the surface area
+              tiny forever.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11 what could go wrong -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">11</span><span>what could go wrong</span>
+        </h2>
+        <div class="ds-feat-grid">
+          <div class="ds-feat">
+            <h3 class="ds-feat__title">Abuse → short-link spam</h3>
+            <p class="ds-feat__body">
+              Mitigated by: owner-only creation for links. Public endpoint is notes-only,
+              Turnstile-gated, rate-limited via KV.
+            </p>
+          </div>
+          <div class="ds-feat ds-feat--alt">
+            <h3 class="ds-feat__title">Outbound email deliverability</h3>
+            <p class="ds-feat__body">
+              Magic links go to ONE address you control. If Email Workers have trouble, fallback is
+              a tiny Resend (3k/mo free) binding.
+            </p>
+          </div>
+          <div class="ds-feat">
+            <h3 class="ds-feat__title">D1 beta / data loss</h3>
+            <p class="ds-feat__body">
+              D1 is GA but still maturing. Nightly cron exports a JSONL dump to R2 (R2 has 10 GB
+              free) for disaster recovery.
+            </p>
+          </div>
+          <div class="ds-feat ds-feat--alt">
+            <h3 class="ds-feat__title">Domain / cost creep</h3>
+            <p class="ds-feat__body">
+              Only recurring cost is your domain (~$10/yr). Everything else stays on free tier
+              unless usage explodes — in which case, good problem.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Kbd demo (not in the pitch; DESIGN.md §3.15 requires it) -->
+      <section class="ds-section">
+        <h2 class="ds-section-header">
+          <span class="ds-section-header__num">12</span><span>inline helpers</span>
+        </h2>
+        <p class="ds-prose">
+          Press <kbd class="ds-kbd">⌘</kbd> + <kbd class="ds-kbd">K</kbd> to open the command
+          palette. Tokens look like <code class="ds-token">OWNER_EMAIL</code>. Comments read like
+          <span class="ds-comment">// a technical aside</span>.
+        </p>
+      </section>
+
+      <!-- Footer -->
+      <footer class="ds-footer">
+        <div>// stub — pitch draft</div>
+        <div>ready to build &nbsp;<span class="ds-footer__glyph">■</span></div>
+      </footer>
+    </div>
+  </body>
+</html>

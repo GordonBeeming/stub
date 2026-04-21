@@ -1,0 +1,37 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+.next/
+.open-next/
+.turbo/
+*.tsbuildinfo
+
+# env + secrets
+.env
+.env.local
+.env.*.local
+wrangler.toml
+.dev.vars
+
+# wrangler / cloudflare
+.wrangler/
+.mf/
+
+# playwright-mcp screenshot/snapshot artifacts
+.playwright-mcp/
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# editor / os
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp

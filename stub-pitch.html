@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>stub — pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E0E10;
+    --bg-2: #141418;
+    --bg-3: #1A1A20;
+    --line: #2A2A33;
+    --line-soft: #1E1E24;
+    --text: #E8E8EC;
+    --text-2: #9B9BA6;
+    --text-3: #64646E;
+    --primary: #46CBFF;
+    --primary-dim: #2B8AAB;
+    --accent: #FFCC66;
+    --danger: #FF6B7A;
+    --success: #6BDB9A;
+
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --serif: 'Instrument Serif', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Subtle grid background */
+  body {
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(70, 203, 255, 0.04), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255, 204, 102, 0.03), transparent 40%),
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size: auto, auto, 48px 48px, 48px 48px;
+    background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+  }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+
+  /* ——— HEADER ——— */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 48px;
+  }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .brand b { color: var(--primary); font-weight: 500; }
+
+  /* ——— HERO ——— */
+  .hero {
+    padding: 32px 0 56px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 56px;
+    position: relative;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--primary);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--primary);
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  h1 .cursor {
+    display: inline-block;
+    width: 0.5ch;
+    background: var(--primary);
+    color: var(--primary);
+    animation: blink 1s steps(2) infinite;
+    margin-left: 2px;
+    border-radius: 1px;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  h1 i {
+    color: var(--text-2);
+    font-style: italic;
+  }
+
+  .tagline {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text-2);
+    max-width: 620px;
+    line-height: 1.7;
+  }
+
+  .tagline .tok { color: var(--primary); }
+  .tagline .com { color: var(--text-3); }
+
+  /* ——— SECTIONS ——— */
+  section {
+    margin-bottom: 72px;
+  }
+
+  h2 {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  h2 .num {
+    color: var(--primary);
+    font-weight: 500;
+  }
+
+  h3 {
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  p { color: var(--text-2); font-size: 15px; }
+  p + p { margin-top: 12px; }
+
+  /* ——— THE PROBLEM ——— */
+  .problem {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .problem > div {
+    padding: 24px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  .problem .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+  .problem .vs {
+    color: var(--danger);
+  }
+  .problem .us {
+    color: var(--success);
+  }
+
+  /* ——— NAMES ——— */
+  .names {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-2);
+  }
+  .name-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 110px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+    gap: 24px;
+    transition: background 0.15s ease;
+  }
+  .name-row:last-child { border-bottom: none; }
+  .name-row:hover { background: var(--bg-3); }
+  .name-row.featured { background: rgba(70, 203, 255, 0.04); }
+  .name-row.featured:hover { background: rgba(70, 203, 255, 0.07); }
+
+  .name-word {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .name-word .tld {
+    color: var(--text-3);
+    font-weight: 400;
+  }
+  .featured .name-word { color: var(--primary); }
+
+  .name-desc {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+
+  .name-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 3px;
+    align-self: start;
+    justify-self: end;
+    white-space: nowrap;
+  }
+  .badge-top    { background: var(--primary); color: var(--bg); }
+  .badge-alt    { background: var(--line); color: var(--text-2); }
+  .badge-quirky { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+  /* ——— ARCHITECTURE DIAGRAM ——— */
+  .arch {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .arch svg { width: 100%; height: auto; display: block; }
+
+  /* ——— STACK ——— */
+  .stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .stack-cell {
+    background: var(--bg-2);
+    padding: 20px 24px;
+  }
+  .stack-cell .svc {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--primary);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .stack-cell .role {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .stack-cell .usage {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    line-height: 1.5;
+  }
+
+  /* ——— FREE TIER TABLE ——— */
+  .budget {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .budget-row {
+    display: grid;
+    grid-template-columns: 170px 1fr 160px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--line-soft);
+    font-family: var(--mono);
+    font-size: 13px;
+    align-items: center;
+  }
+  .budget-row:last-child { border-bottom: none; }
+  .budget-row.head {
+    background: var(--bg-3);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    padding: 10px 24px;
+  }
+  .budget-svc { color: var(--primary); font-weight: 500; }
+  .budget-limit { color: var(--text-2); }
+  .budget-used {
+    color: var(--success);
+    text-align: right;
+    font-size: 12px;
+  }
+
+  /* ——— AUTH FLOW ——— */
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .flow-step {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 18px 16px;
+    position: relative;
+  }
+  .flow-step .idx {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--primary);
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .flow-step .title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .flow-step .desc {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    line-height: 1.5;
+  }
+  .flow-step::after {
+    content: '→';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-3);
+    font-size: 14px;
+    z-index: 1;
+  }
+  .flow-step:last-child::after { display: none; }
+
+  /* ——— FEATURES LIST ——— */
+  .features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .feat {
+    padding: 18px 20px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    border-left: 2px solid var(--primary);
+  }
+  .feat.alt { border-left-color: var(--accent); }
+  .feat h3 { font-size: 15px; margin-bottom: 6px; }
+  .feat p { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+
+  /* ——— DECISION BOX ——— */
+  .decision {
+    background: linear-gradient(180deg, var(--bg-2), var(--bg-3));
+    border: 1px solid var(--primary-dim);
+    border-radius: 6px;
+    padding: 28px 32px;
+    position: relative;
+  }
+  .decision::before {
+    content: 'VERDICT';
+    position: absolute;
+    top: -9px;
+    left: 24px;
+    background: var(--bg);
+    padding: 0 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--primary);
+  }
+  .decision h3 {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .decision p { color: var(--text-2); font-size: 14px; }
+
+  /* ——— OPEN SOURCE CALLOUT ——— */
+  .oss {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--success);
+    border-radius: 6px;
+  }
+  .oss .icon {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--success);
+    color: var(--success);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .oss .body h3 { font-size: 14px; margin-bottom: 2px; }
+  .oss .body p { font-size: 13px; margin: 0; }
+
+  /* ——— CLI SETUP ——— */
+  .cli {
+    background: #08080A;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 20px 24px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+  .cli .c { color: var(--text-3); }
+  .cli .p { color: var(--primary); }
+  .cli .s { color: var(--accent); }
+  .cli .d { color: var(--text-2); }
+
+  /* ——— FOOTER ——— */
+  footer {
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: 0.05em;
+  }
+
+  /* ——— RESPONSIVE ——— */
+  @media (max-width: 720px) {
+    .wrap { padding: 32px 20px 64px; }
+    .problem, .features, .stack { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr 1fr; }
+    .name-row { grid-template-columns: 1fr; gap: 8px; }
+    .name-badge { justify-self: start; }
+    .budget-row { grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; }
+    .budget-row .budget-limit { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">&#47;&#47; <b>GordonBeeming</b> &middot; pitch document</div>
+  <div class="meta">v0.1 &middot; draft</div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <span class="eyebrow">proposal</span>
+  <h1>stub<span class="cursor">.</span><br><i>a short link & secret note service,</i><br><i>self-hosted on cloudflare.</i></h1>
+  <p class="tagline">
+    <span class="com">// open source, single-tenant, passkey-auth'd.</span><br>
+    one <span class="tok">wrangler deploy</span>, one email, one user &mdash; you.<br>
+    <span class="com">// runs indefinitely on the cloudflare free tier for a personal-scale workload.</span>
+  </p>
+</div>
+
+<!-- ============ THE PROBLEM ============ -->
+<section>
+  <h2><span class="num">01</span> why build this</h2>
+  <p style="margin-bottom: 24px;">Most short-link and burn-note services run in someone else's tenant, behind someone else's account model. If you already have a domain and a Cloudflare account, this is a weekend of work and <span style="color: var(--primary); font-family: var(--mono);">$0/month</span> forever.</p>
+
+  <div class="problem">
+    <div>
+      <div class="label vs">// Existing tools</div>
+      <p style="color: var(--text); font-size: 14px; line-height: 1.7;">Hosted services want an account you didn't ask for. Self-hosted alternatives tend to need a VPS. Cloudflare redirect rules hard-code destinations with no UI, no stats, no notes.</p>
+    </div>
+    <div>
+      <div class="label us">// stub</div>
+      <p style="color: var(--text); font-size: 14px; line-height: 1.7;">Deploy to your account, point your domain at it, passkey-log-in as the only user. Create short links. Burn notes. Done. Anyone can fork and stand up their own in ~10 minutes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NAMES ============ -->
+<section>
+  <h2><span class="num">02</span> name candidates</h2>
+  <p style="margin-bottom: 20px;">Short, technical, lowercase. All domains need checking — ranked by my gut.</p>
+
+  <div class="names">
+    <div class="name-row featured">
+      <div class="name-word">stub<span class="tld">.sh</span></div>
+      <div class="name-desc">A link stub, a note stub &mdash; both are small remnants that get created, used, and discarded. Short, real English word, lowercase-friendly. Works as both verb and noun.</div>
+      <div class="name-badge badge-top">top pick</div>
+    </div>
+
+    <div class="name-row">
+      <div class="name-word">beem<span class="tld">.link</span></div>
+      <div class="name-desc">Plays off your surname, subtle rather than loud. A &ldquo;beem&rdquo; of a link across the wire. Personal branding without being on-the-nose.</div>
+      <div class="name-badge badge-alt">personal</div>
+    </div>
+
+    <div class="name-row">
+      <div class="name-word">ephem<span class="tld">.link</span></div>
+      <div class="name-desc">Short for ephemeral &mdash; captures the core idea of both features (short-lived redirects, burn-after-read notes). Slightly more literary than stub.</div>
+      <div class="name-badge badge-alt">descriptive</div>
+    </div>
+
+    <div class="name-row">
+      <div class="name-word">onepass<span class="tld">.to</span></div>
+      <div class="name-desc">One-time pass &mdash; works for both a link pass-through and a single-view note. Could collide mentally with 1Password.</div>
+      <div class="name-badge badge-alt">viable</div>
+    </div>
+
+    <div class="name-row">
+      <div class="name-word">crumb<span class="tld">.sh</span></div>
+      <div class="name-desc">A crumb gets left behind, then eaten. Playful, memorable, slightly off-beat. Good if you want personality.</div>
+      <div class="name-badge badge-quirky">fun</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DECISION: ONE APP OR TWO? ============ -->
+<section>
+  <h2><span class="num">03</span> one app, or two?</h2>
+
+  <div class="decision">
+    <h3>One app. Ship them together.</h3>
+    <p style="margin-bottom: 10px;"><strong style="color: var(--text);">Both features are the same primitive:</strong> a short random key that resolves to a stored payload, optionally with TTL and single-use semantics. A short link is just a note whose payload is <code style="font-family: var(--mono); color: var(--primary); font-size: 13px;">{ type: "redirect", url }</code>. A burn note is <code style="font-family: var(--mono); color: var(--primary); font-size: 13px;">{ type: "note", ciphertext, burnOnRead: true }</code>.</p>
+    <p>Same D1 schema, same dashboard, same passkey login, same Worker, same deploy. Splitting them doubles your maintenance burden for zero architectural gain. The single-tenant constraint makes it even cleaner &mdash; no tenant isolation to worry about.</p>
+  </div>
+</section>
+
+<!-- ============ ARCHITECTURE DIAGRAM ============ -->
+<section>
+  <h2><span class="num">04</span> architecture</h2>
+
+  <div class="arch">
+    <svg viewBox="0 0 820 360" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#64646E"/>
+        </marker>
+        <marker id="arrow-p" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#46CBFF"/>
+        </marker>
+      </defs>
+
+      <!-- BROWSER -->
+      <g>
+        <rect x="20" y="140" width="130" height="80" rx="4" fill="#141418" stroke="#2A2A33" stroke-width="1"/>
+        <text x="85" y="175" text-anchor="middle" fill="#E8E8EC" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500">browser</text>
+        <text x="85" y="195" text-anchor="middle" fill="#64646E" font-family="JetBrains Mono, monospace" font-size="10">owner + visitors</text>
+      </g>
+
+      <!-- CF EDGE container -->
+      <g>
+        <rect x="200" y="30" width="420" height="300" rx="6" fill="transparent" stroke="#2A2A33" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="210" y="22" fill="#46CBFF" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1.5">CLOUDFLARE EDGE</text>
+      </g>
+
+      <!-- WORKER -->
+      <g>
+        <rect x="230" y="60" width="200" height="70" rx="4" fill="#1A1A20" stroke="#46CBFF" stroke-width="1"/>
+        <text x="330" y="88" text-anchor="middle" fill="#46CBFF" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500">Worker</text>
+        <text x="330" y="108" text-anchor="middle" fill="#9B9BA6" font-family="JetBrains Mono, monospace" font-size="10">Hono / itty-router</text>
+        <text x="330" y="122" text-anchor="middle" fill="#64646E" font-family="JetBrains Mono, monospace" font-size="9">/ &bull; /s/:id &bull; /n/:id &bull; /api</text>
+      </g>
+
+      <!-- STATIC ASSETS -->
+      <g>
+        <rect x="460" y="60" width="140" height="70" rx="4" fill="#1A1A20" stroke="#2A2A33" stroke-width="1"/>
+        <text x="530" y="85" text-anchor="middle" fill="#E8E8EC" font-family="JetBrains Mono, monospace" font-size="12" font-weight="500">Static Assets</text>
+        <text x="530" y="103" text-anchor="middle" fill="#64646E" font-family="JetBrains Mono, monospace" font-size="10">SPA + login UI</text>
+        <text x="530" y="118" text-anchor="middle" fill="#64646E" font-family="JetBrains Mono, monospace" font-size="9">(bundled w/ Worker)</text>
+      </g>
+
+      <!-- D1 -->
+      <g>
+        <rect x="230" y="170" width="170" height="60" rx="4" fill="#1A1A20" stroke="#2A2A33" stroke-width="1"/>
+        <text x="315" y="194" text-anchor="middle" fill="#46CBFF" font-family="JetBrains Mono, monospace" font-size="12" font-weight="500">D1</text>
+        <text x="315" y="212" text-anchor="middle" fill="#9B9BA6" font-family="JetBrains Mono, monospace" font-size="10">links, notes, passkeys</text>
+        <text x="315" y="224" text-anchor="middle" fill="#64646E" font-family="JetBrains Mono, monospace" font-size="9">(sqlite @ edge)</text>
+      </g>
+
+      <!-- KV -->
+      <g>
+        <rect x="430" y="170" width="170" height="60" rx="4" fill="#1A1A20" stroke="#2A2A33" stroke-width="1"/>
+        <text x="515" y="194" text-anchor="middle" fill="#46CBFF" font-family="JetBrains Mono, monospace" font-size="12" font-weight="500">KV</text>
+        <text x="515" y="212" text-anchor="middle" fill="#9B9BA6" font-family="JetBrains Mono, monospace" font-size="10">sessions, rate-limit</text>
+        <text x="515" y="224" text-anchor="middle" fill="#64646E" font-family="JetBrains Mono, monospace" font-size="9">(hot, short-TTL)</text>
+      </g>
+
+      <!-- TURNSTILE -->
+      <g>
+        <rect x="230" y="260" width="170" height="50" rx="4" fill="#1A1A20" stroke="#2A2A33" stroke-width="1"/>
+        <text x="315" y="282" text-anchor="middle" fill="#E8E8EC" font-family="JetBrains Mono, monospace" font-size="12" font-weight="500">Turnstile</text>
+        <text x="315" y="300" text-anchor="middle" fill="#64646E" font-family="JetBrains Mono, monospace" font-size="10">public form anti-abuse</text>
+      </g>
+
+      <!-- EMAIL ROUTING -->
+      <g>
+        <rect x="430" y="260" width="170" height="50" rx="4" fill="#1A1A20" stroke="#2A2A33" stroke-width="1"/>
+        <text x="515" y="282" text-anchor="middle" fill="#E8E8EC" font-family="JetBrains Mono, monospace" font-size="12" font-weight="500">Email Worker</text>
+        <text x="515" y="300" text-anchor="middle" fill="#64646E" font-family="JetBrains Mono, monospace" font-size="10">magic-link delivery</text>
+      </g>
+
+      <!-- OWNER INBOX -->
+      <g>
+        <rect x="670" y="230" width="130" height="80" rx="4" fill="#141418" stroke="#2A2A33" stroke-width="1"/>
+        <text x="735" y="265" text-anchor="middle" fill="#E8E8EC" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500">owner inbox</text>
+        <text x="735" y="285" text-anchor="middle" fill="#64646E" font-family="JetBrains Mono, monospace" font-size="10">magic link only</text>
+      </g>
+
+      <!-- ARROWS -->
+      <path d="M 150 180 L 225 95" stroke="#46CBFF" stroke-width="1.2" fill="none" marker-end="url(#arrow-p)"/>
+      <path d="M 430 95 L 458 95" stroke="#64646E" stroke-width="1" fill="none" marker-end="url(#arrow)"/>
+      <path d="M 330 130 L 320 165" stroke="#64646E" stroke-width="1" fill="none" marker-end="url(#arrow)"/>
+      <path d="M 360 130 L 500 165" stroke="#64646E" stroke-width="1" fill="none" marker-end="url(#arrow)"/>
+      <path d="M 330 130 L 320 255" stroke="#64646E" stroke-width="1" fill="none" stroke-dasharray="2 2" marker-end="url(#arrow)"/>
+      <path d="M 360 130 L 505 255" stroke="#64646E" stroke-width="1" fill="none" stroke-dasharray="2 2" marker-end="url(#arrow)"/>
+      <path d="M 600 285 L 665 270" stroke="#64646E" stroke-width="1" fill="none" marker-end="url(#arrow)"/>
+    </svg>
+  </div>
+
+  <p style="font-family: var(--mono); font-size: 12px; color: var(--text-3); text-align: center;">Single Worker binds every resource. Static assets ship in the same bundle. No Pages project, no extra deploys.</p>
+</section>
+
+<!-- ============ STACK ============ -->
+<section>
+  <h2><span class="num">05</span> the stack</h2>
+  <div class="stack">
+    <div class="stack-cell">
+      <div class="svc">Workers</div>
+      <div class="role">API + redirect handler + SSR</div>
+      <div class="usage">runs every request.<br>uses Hono for routing.</div>
+    </div>
+    <div class="stack-cell">
+      <div class="svc">Workers Static Assets</div>
+      <div class="role">SPA frontend</div>
+      <div class="usage">bundled with the Worker.<br>served at <span style="color: var(--primary);">/</span> and <span style="color: var(--primary);">/dashboard</span>.</div>
+    </div>
+    <div class="stack-cell">
+      <div class="svc">D1</div>
+      <div class="role">durable store</div>
+      <div class="usage">tables: links, notes, users,<br>passkeys, magic_tokens, audit.</div>
+    </div>
+    <div class="stack-cell">
+      <div class="svc">Workers KV</div>
+      <div class="role">hot-path cache + sessions</div>
+      <div class="usage">session jwt &rarr; user id,<br>per-ip rate limit counters.</div>
+    </div>
+    <div class="stack-cell">
+      <div class="svc">Turnstile</div>
+      <div class="role">bot protection</div>
+      <div class="usage">on any unauthenticated form.<br>magic link request, public notes.</div>
+    </div>
+    <div class="stack-cell">
+      <div class="svc">Email Workers</div>
+      <div class="role">outbound magic links</div>
+      <div class="usage">send via email routing api<br>or MailChannels / Resend.</div>
+    </div>
+    <div class="stack-cell">
+      <div class="svc">Cron Triggers</div>
+      <div class="role">housekeeping</div>
+      <div class="usage">prune expired notes,<br>expired tokens, stale sessions.</div>
+    </div>
+    <div class="stack-cell">
+      <div class="svc">SimpleWebAuthn</div>
+      <div class="role">passkey library</div>
+      <div class="usage">@simplewebauthn/server works<br>out-of-the-box on Workers.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FREE TIER BUDGET ============ -->
+<section>
+  <h2><span class="num">06</span> free-tier budget &mdash; where you live</h2>
+  <div class="budget">
+    <div class="budget-row head">
+      <div>service</div>
+      <div>free allowance (daily unless noted)</div>
+      <div>typical personal use</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-svc">Workers</div>
+      <div class="budget-limit">100,000 requests / day</div>
+      <div class="budget-used">&lt; 1%</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-svc">Workers KV</div>
+      <div class="budget-limit">100k reads, 1k writes, 1 GB storage</div>
+      <div class="budget-used">&lt; 2%</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-svc">D1</div>
+      <div class="budget-limit">5M rows read, 100k rows written, 5 GB</div>
+      <div class="budget-used">&lt; 1%</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-svc">Static Assets</div>
+      <div class="budget-limit">unlimited (bundled with Worker)</div>
+      <div class="budget-used">&mdash;</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-svc">Turnstile</div>
+      <div class="budget-limit">1M siteverify / month</div>
+      <div class="budget-used">&lt; 1%</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-svc">Email Routing</div>
+      <div class="budget-limit">unlimited inbound, limited outbound</div>
+      <div class="budget-used">&mdash;</div>
+    </div>
+    <div class="budget-row">
+      <div class="budget-svc">Cron Triggers</div>
+      <div class="budget-limit">included with Workers free</div>
+      <div class="budget-used">&mdash;</div>
+    </div>
+  </div>
+  <p style="font-family: var(--mono); font-size: 12px; color: var(--text-3); margin-top: 14px; text-align: center;">// at 1000 clicks/day + 50 notes/day you're using a fraction of a percent of the free tier.</p>
+</section>
+
+<!-- ============ AUTH FLOW ============ -->
+<section>
+  <h2><span class="num">07</span> auth flow &mdash; single tenant, passkey-first</h2>
+  <p style="margin-bottom: 8px;">Configured with a single environment variable: <code style="font-family: var(--mono); color: var(--primary); background: var(--bg-2); padding: 2px 8px; border-radius: 3px; font-size: 13px;">OWNER_EMAIL</code>. Only that address can ever sign in.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <span class="idx">01 / bootstrap</span>
+      <div class="title">Request magic link</div>
+      <div class="desc">Owner enters email. Server checks it matches OWNER_EMAIL, mints one-time token to KV (10 min TTL).</div>
+    </div>
+    <div class="flow-step">
+      <span class="idx">02 / verify</span>
+      <div class="title">Click link in email</div>
+      <div class="desc">Token validated, consumed, session issued. Signed JWT in HttpOnly cookie.</div>
+    </div>
+    <div class="flow-step">
+      <span class="idx">03 / enroll</span>
+      <div class="title">Register passkey</div>
+      <div class="desc">First login prompts WebAuthn enrollment &mdash; Touch ID, Windows Hello, YubiKey. Stored in D1.</div>
+    </div>
+    <div class="flow-step">
+      <span class="idx">04 / return</span>
+      <div class="title">Passkey sign-in</div>
+      <div class="desc">Subsequent logins skip email. Passkey only. Magic link kept as recovery fallback.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section>
+  <h2><span class="num">08</span> feature surface</h2>
+  <div class="features">
+    <div class="feat">
+      <h3>Short links</h3>
+      <p>Custom slug or auto-generated nanoid. Optional expiry, max-click limit, click analytics (hashed IP, UA family, referrer).</p>
+    </div>
+    <div class="feat alt">
+      <h3>Secret notes</h3>
+      <p>Plaintext encrypted <em style="color: var(--text);">client-side</em> with WebCrypto (AES-GCM), key in URL fragment. Server sees only ciphertext.</p>
+    </div>
+    <div class="feat">
+      <h3>Burn on read</h3>
+      <p>Row deleted on first successful decrypt. TTL-based expiry as a backstop. Cron prunes the floor weekly.</p>
+    </div>
+    <div class="feat alt">
+      <h3>QR codes</h3>
+      <p>Any link or note URL can be rendered as a QR inline. Useful for sharing in person without typing.</p>
+    </div>
+    <div class="feat">
+      <h3>Owner dashboard</h3>
+      <p>Create, list, revoke. Realtime click/view stats. Bulk delete. Export to JSONL for backup.</p>
+    </div>
+    <div class="feat alt">
+      <h3>Public create</h3>
+      <p>Optional mode: anyone can create a burn-note (no login, Turnstile protected). Short links stay owner-only.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SETUP ============ -->
+<section>
+  <h2><span class="num">09</span> standing your own up</h2>
+  <p style="margin-bottom: 16px;">Whole-repo forker experience. ~10 minutes from clone to live domain.</p>
+  <div class="cli">
+<span class="c"># clone &amp; configure</span>
+<span class="p">$</span> <span class="d">gh repo fork GordonBeeming/stub --clone</span>
+<span class="p">$</span> <span class="d">cd stub &amp;&amp; pnpm install</span>
+<span class="p">$</span> <span class="d">cp wrangler.example.toml wrangler.toml</span>
+
+<span class="c"># set your single owner email</span>
+<span class="p">$</span> <span class="d">npx wrangler secret put OWNER_EMAIL</span>
+<span class="p">&gt;</span> <span class="s">you@yourdomain.com</span>
+
+<span class="c"># provision resources (one command per)</span>
+<span class="p">$</span> <span class="d">npx wrangler d1 create stub-db</span>
+<span class="p">$</span> <span class="d">npx wrangler kv namespace create SESSIONS</span>
+<span class="p">$</span> <span class="d">npx wrangler d1 execute stub-db --file migrations/001_init.sql</span>
+
+<span class="c"># ship it</span>
+<span class="p">$</span> <span class="d">npx wrangler deploy</span>
+<span class="c"># &rarr; https://stub.yourdomain.com   (add route in dashboard)</span>
+  </div>
+</section>
+
+<!-- ============ OPEN SOURCE ============ -->
+<section>
+  <h2><span class="num">10</span> distribution</h2>
+  <div class="oss">
+    <div class="icon">&#9675;</div>
+    <div class="body">
+      <h3>MIT &mdash; open source, published under <code style="font-family: var(--mono); color: var(--primary); font-size: 12px;">github.com/GordonBeeming/stub</code></h3>
+      <p>Single-tenant by design. Every fork is its own deployment. Issues and PRs welcome, but the tool ships &ldquo;done&rdquo; &mdash; the constraint of one user keeps the surface area tiny forever.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APPENDIX: RISKS ============ -->
+<section>
+  <h2><span class="num">11</span> what could go wrong</h2>
+  <div class="features">
+    <div class="feat">
+      <h3>Abuse &rarr; short-link spam</h3>
+      <p>Mitigated by: owner-only creation for links. Public endpoint is notes-only, Turnstile-gated, rate-limited via KV.</p>
+    </div>
+    <div class="feat alt">
+      <h3>Outbound email deliverability</h3>
+      <p>Magic links go to ONE address you control. If Email Workers have trouble, fallback is a tiny Resend (3k/mo free) binding.</p>
+    </div>
+    <div class="feat">
+      <h3>D1 beta / data loss</h3>
+      <p>D1 is GA but still maturing. Nightly cron exports a JSONL dump to R2 (R2 has 10 GB free) for disaster recovery.</p>
+    </div>
+    <div class="feat alt">
+      <h3>Domain / cost creep</h3>
+      <p>Only recurring cost is your domain (~$10/yr). Everything else stays on free tier unless usage explodes &mdash; in which case, good problem.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>// stub &mdash; pitch draft</div>
+  <div>ready to build &nbsp;<span style="color: var(--primary);">&#9632;</span></div>
+</footer>
+
+</div>
+</body>
+</html>
