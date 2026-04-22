@@ -433,9 +433,11 @@ const bigInputStyle: CSSProperties = {
   boxSizing: 'border-box',
 };
 const textareaStyle: CSSProperties = { ...bigInputStyle, resize: 'vertical', lineHeight: 1.55 };
-// Submit sits flush-right on wide rows, stacks full-width on narrow ones.
-// Keeping the CTA content-width on desktop breaks up the "wall of full-width
-// inputs" rhythm that looked uniform and heavy.
+// Submit sits flush-right on wide rows and caps at 180px so the CTA is a
+// button, not a banner. If the panel ever narrows below 180px (very tight
+// mobile gutters, zoomed viewports) the button collapses to the container
+// width instead of overflowing it — width:100% + maxWidth does that
+// without needing a media query.
 const submitRowStyle: CSSProperties = {
   display: 'flex',
   justifyContent: 'flex-end',
@@ -450,7 +452,8 @@ const primaryBtn: CSSProperties = {
   fontSize: 14,
   fontWeight: 500,
   cursor: 'pointer',
-  minWidth: 180,
+  width: '100%',
+  maxWidth: 180,
 };
 const detailsStyle: CSSProperties = {
   border: '1px solid var(--line-soft)',

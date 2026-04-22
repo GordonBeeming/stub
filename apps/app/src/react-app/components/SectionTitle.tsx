@@ -6,7 +6,7 @@ interface Props {
   as?: 'h1' | 'h2';
 }
 
-// Shared title block for signed-in pages (login, enroll, dashboard sub-pages).
+// Shared title block for auth entry points and dashboard sub-pages.
 // The mono eyebrow locks these into the same terminal-style vocabulary the
 // dashboard nav and form labels already use; the heading stays sans at a
 // modest weight so it reads as a page title without fighting the chrome.

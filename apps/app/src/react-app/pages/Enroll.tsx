@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useSearch } from 'wouter';
+import { AuthCard } from '../components/AuthCard';
 import { EnrollFlow } from '../components/EnrollFlow';
 import { useOwnerSession } from '../lib/use-owner-session';
 import type { PasskeyRow } from '../lib/types';
@@ -55,30 +56,11 @@ export function Enroll() {
   }
 
   return (
-    <section style={authCardWrap}>
-      <div style={authCard}>
-        <EnrollFlow addingMore={addingMore} />
-      </div>
-    </section>
+    <AuthCard maxWidth={520}>
+      <EnrollFlow addingMore={addingMore} />
+    </AuthCard>
   );
 }
-
-// Match the /login framing so both hops through the auth flow feel like
-// the same surface rather than two unrelated layouts.
-const authCardWrap: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  padding: '16px 0 32px',
-};
-
-const authCard: React.CSSProperties = {
-  width: '100%',
-  maxWidth: 520,
-  background: 'var(--bg-2)',
-  border: '1px solid var(--line)',
-  borderRadius: 'var(--radius-lg)',
-  padding: '32px 28px',
-};
 
 // Local PasskeyRow import keeps the tree-shake happy — the Enroll page
 // doesn't use it directly, but re-exporting keeps the file's typecheck
