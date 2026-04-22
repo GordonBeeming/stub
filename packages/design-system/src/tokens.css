@@ -27,6 +27,10 @@
   --primary: #46cbff;
   --primary-dim: #2b8aab;
   --accent: #0063b2;
+  /* Foreground that sits *on* --primary. Kept as its own token so dark
+   * mode's light cyan primary takes a dark text, while light mode's
+   * darker navy primary takes a light text. Both pairings clear WCAG AA. */
+  --on-primary: #0e0e10;
 
   /* Semantic */
   --danger: #f87171;
@@ -66,6 +70,7 @@
     --primary: #0063b2;
     --primary-dim: #0075a3;
     --accent: #0075a3;
+    --on-primary: #ffffff;
     --danger: #b91c1c;
     --success: #15803d;
   }
@@ -85,6 +90,7 @@
   --primary: #46cbff;
   --primary-dim: #2b8aab;
   --accent: #0063b2;
+  --on-primary: #0e0e10;
   --danger: #f87171;
   --success: #4ade80;
 }
@@ -102,6 +108,7 @@
   --primary: #0063b2;
   --primary-dim: #0075a3;
   --accent: #0075a3;
+  --on-primary: #ffffff;
   --danger: #b91c1c;
   --success: #15803d;
 }

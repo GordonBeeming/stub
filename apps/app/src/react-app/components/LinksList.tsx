@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { NameList, NameRow } from '@gordonbeeming/design-system';
 import { buildShortUrl, type LinkClickRow, type LinkRow } from '../lib/types';
+import { SectionTitle } from './SectionTitle';
 
 export interface LinksListProps {
   initialLinks: LinkRow[];
@@ -70,6 +71,7 @@ export function LinksList({ initialLinks, siteUrl }: LinksListProps) {
 
   return (
     <>
+      <SectionTitle eyebrow="short links">Your links</SectionTitle>
       {selectedIds.size > 0 ? (
         <div
           style={{

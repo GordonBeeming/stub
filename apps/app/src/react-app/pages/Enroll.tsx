@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useSearch } from 'wouter';
+import { AuthCard } from '../components/AuthCard';
 import { EnrollFlow } from '../components/EnrollFlow';
 import { useOwnerSession } from '../lib/use-owner-session';
 import type { PasskeyRow } from '../lib/types';
@@ -55,9 +56,9 @@ export function Enroll() {
   }
 
   return (
-    <section style={{ maxWidth: 520 }}>
+    <AuthCard maxWidth={520}>
       <EnrollFlow addingMore={addingMore} />
-    </section>
+    </AuthCard>
   );
 }
 

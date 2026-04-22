@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearch } from 'wouter';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { Comment } from '@gordonbeeming/design-system';
+import { SectionTitle } from './SectionTitle';
 
 type Status = 'idle' | 'submitting' | 'sent' | 'passkey' | 'error';
 
@@ -26,15 +27,6 @@ interface TurnstileOpts {
   'expired-callback'?: () => void;
   theme?: 'light' | 'dark' | 'auto';
 }
-
-const sectionTitle: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  fontWeight: 500,
-  fontSize: 'clamp(22px, 2.8vw, 26px)',
-  letterSpacing: '-0.01em',
-  color: 'var(--text)',
-  margin: '0 0 20px',
-};
 
 export function LoginForm({ turnstileSiteKey }: Props) {
   const search = useSearch();
@@ -169,7 +161,7 @@ export function LoginForm({ turnstileSiteKey }: Props) {
 
   return (
     <>
-      <h2 style={sectionTitle}>Sign in</h2>
+      <SectionTitle eyebrow="sign in">Sign in to stub</SectionTitle>
 
       {err === 'invalid' ? (
         <p style={{ marginBottom: 16 }}>
@@ -222,7 +214,7 @@ export function LoginForm({ turnstileSiteKey }: Props) {
             disabled={status === 'submitting' || !email || !tokenReady}
             style={{
               background: 'var(--primary)',
-              color: '#000',
+              color: 'var(--on-primary)',
               border: 0,
               borderRadius: 'var(--radius-md)',
               padding: '10px 14px',

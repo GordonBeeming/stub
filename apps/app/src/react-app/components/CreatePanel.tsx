@@ -3,6 +3,7 @@ import type { CSSProperties, FormEvent } from 'react';
 import { base64UrlEncodeBytes } from '../lib/base64url';
 import { encryptPlaintext } from '../lib/notes-crypto';
 import { buildShortUrl, type LinkRow } from '../lib/types';
+import { SectionTitle } from './SectionTitle';
 
 export interface CreatePanelProps {
   siteUrl: string;
@@ -176,6 +177,9 @@ export function CreatePanel({ siteUrl }: CreatePanelProps) {
 
   return (
     <div style={panelStyle}>
+      <SectionTitle eyebrow={mode === 'link' ? 'new short link' : 'new burn note'}>
+        {mode === 'link' ? 'Shorten a URL' : 'Encrypt a note'}
+      </SectionTitle>
       <div role="tablist" aria-label="create a stub" style={toggleRowStyle}>
         <SegButton active={mode === 'link'} onClick={() => switchMode('link')}>
           short link
@@ -374,23 +378,47 @@ function Field({ label, children }: FieldProps) {
 
 // --- styles -----------------------------------------------------------------
 
-const panelStyle: CSSProperties = { display: 'grid', gap: 16 };
-const toggleRowStyle: CSSProperties = { display: 'flex', gap: 8, flexWrap: 'wrap' };
-const segBtnIdle: CSSProperties = {
-  background: 'transparent',
-  color: 'var(--text-2)',
-  border: '1px solid var(--line)',
-  borderRadius: 'var(--radius-md)',
-  padding: '10px 16px',
+// Constrain the "new" panel so the form reads as a single focused surface
+// rather than a page-wide wall. 600px is wide enough for a URL input + the
+// advanced-options grid to stay three-up, narrow enough that the submit
+// button feels like a button rather than a banner.
+const panelStyle: CSSProperties = {
+  display: 'grid',
+  gap: 16,
+  maxWidth: 600,
+};
+// Styled as a mini version of the dashboard nav above — mono caps, underline
+// for the active tab, no button box. Keeps the whole "new" surface in one
+// visual vocabulary rather than stacking a button row on top of a tab row.
+const toggleRowStyle: CSSProperties = {
+  display: 'flex',
+  gap: 24,
+  alignItems: 'baseline',
+  borderBottom: '1px solid var(--line)',
+  paddingBottom: 12,
   fontFamily: 'var(--font-mono)',
   fontSize: 13,
+  letterSpacing: '0.08em',
+  textTransform: 'uppercase',
+  flexWrap: 'wrap',
+};
+const segBtnIdle: CSSProperties = {
+  background: 'transparent',
+  color: 'var(--text-3)',
+  border: 0,
+  padding: '0 0 2px',
+  borderBottom: '1px solid transparent',
+  fontFamily: 'inherit',
+  fontSize: 'inherit',
+  letterSpacing: 'inherit',
+  textTransform: 'inherit',
   cursor: 'pointer',
   transition: 'color 0.15s ease, border-color 0.15s ease',
 };
 const segBtnActive: CSSProperties = {
   ...segBtnIdle,
   color: 'var(--primary)',
-  borderColor: 'var(--primary)',
+  borderBottom: '1px solid var(--primary)',
 };
 const formStyle: CSSProperties = { display: 'grid', gap: 12 };
 const bigInputStyle: CSSProperties = {
@@ -405,18 +433,27 @@ const bigInputStyle: CSSProperties = {
   boxSizing: 'border-box',
 };
 const textareaStyle: CSSProperties = { ...bigInputStyle, resize: 'vertical', lineHeight: 1.55 };
-const submitRowStyle: CSSProperties = { display: 'flex' };
+// Submit sits flush-right on wide rows and caps at 180px so the CTA is a
+// button, not a banner. If the panel ever narrows below 180px (very tight
+// mobile gutters, zoomed viewports) the button collapses to the container
+// width instead of overflowing it — width:100% + maxWidth does that
+// without needing a media query.
+const submitRowStyle: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'flex-end',
+};
 const primaryBtn: CSSProperties = {
   background: 'var(--primary)',
-  color: '#000',
+  color: 'var(--on-primary)',
   border: 0,
   borderRadius: 'var(--radius-md)',
-  padding: '12px 20px',
+  padding: '12px 22px',
   fontFamily: 'var(--font-sans)',
   fontSize: 14,
   fontWeight: 500,
   cursor: 'pointer',
   width: '100%',
+  maxWidth: 180,
 };
 const detailsStyle: CSSProperties = {
   border: '1px solid var(--line-soft)',
@@ -525,11 +562,16 @@ const noteCaptionStyle: CSSProperties = {
   fontSize: 11,
   margin: 0,
 };
+// Ghost button, not a bare text link — puts a proper hit target under the
+// action and matches the rest of the secondary-button vocabulary (the copy
+// button in the result card, the marketing "github…" link).
 const resetLinkStyle: CSSProperties = {
+  display: 'inline-block',
   background: 'transparent',
-  color: 'var(--text-3)',
-  border: 0,
-  padding: 0,
+  color: 'var(--text-2)',
+  border: '1px solid var(--line)',
+  borderRadius: 'var(--radius-md)',
+  padding: '8px 14px',
   fontFamily: 'var(--font-mono)',
   fontSize: 12,
   textAlign: 'left',

@@ -6,6 +6,7 @@ import { LinksList } from '../components/LinksList';
 import { NotesList } from '../components/NotesList';
 import { LogoutButton } from '../components/LogoutButton';
 import { PasskeyRevokeButton } from '../components/PasskeyRevokeButton';
+import { SectionTitle } from '../components/SectionTitle';
 import { useOwnerSession } from '../lib/use-owner-session';
 import type { ConfigResponse } from '../lib/api';
 import type { LinkRow, NoteMetaRow, PasskeyRow } from '../lib/types';
@@ -140,21 +141,22 @@ function SettingsRoute() {
     };
   }, []);
 
-  const sectionTitle: React.CSSProperties = {
-    fontFamily: 'var(--font-sans)',
-    fontWeight: 500,
-    fontSize: 'clamp(20px, 2.6vw, 22px)',
-    letterSpacing: '-0.01em',
-    color: 'var(--text)',
-    margin: '0 0 16px',
-  };
-
   if (!session) return null;
 
+  // Each section lives inside a bg-2 panel so Settings reads as two discrete
+  // surfaces (who you are, what credentials you have) rather than one long
+  // flat column. Matches the card framing on /login and /enroll.
+  const panelStyle: React.CSSProperties = {
+    background: 'var(--bg-2)',
+    border: '1px solid var(--line)',
+    borderRadius: 'var(--radius-lg)',
+    padding: '24px 24px 20px',
+  };
+
   return (
-    <>
-      <section style={{ marginBottom: 56 }}>
-        <h2 style={sectionTitle}>Session</h2>
+    <div style={{ display: 'grid', gap: 20, maxWidth: 720 }}>
+      <section style={panelStyle}>
+        <SectionTitle eyebrow="session">Session</SectionTitle>
         <div
           style={{
             display: 'flex',
@@ -164,15 +166,24 @@ function SettingsRoute() {
             justifyContent: 'space-between',
           }}
         >
-          <p style={{ color: 'var(--text-2)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+          <p
+            style={{
+              color: 'var(--text-2)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 13,
+              margin: 0,
+              minWidth: 0,
+              wordBreak: 'break-all',
+            }}
+          >
             signed in as <span style={{ color: 'var(--text)' }}>{session.email}</span>
           </p>
           <LogoutButton />
         </div>
       </section>
 
-      <section>
-        <h2 style={sectionTitle}>Passkeys</h2>
+      <section style={panelStyle}>
+        <SectionTitle eyebrow="passkeys">Passkeys</SectionTitle>
 
         {passkeys === null ? (
           <p style={{ color: 'var(--text-3)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>loading…</p>
@@ -254,17 +265,20 @@ function SettingsRoute() {
           href="/enroll?add=1"
           style={{
             display: 'inline-block',
-            color: 'var(--primary)',
+            background: 'transparent',
+            color: 'var(--text-2)',
+            border: '1px solid var(--line)',
+            borderRadius: 'var(--radius-md)',
+            padding: '8px 14px',
             fontFamily: 'var(--font-mono)',
             fontSize: 13,
             textDecoration: 'none',
-            borderBottom: '1px solid var(--primary-dim)',
           }}
         >
           register another
         </Link>
       </section>
-    </>
+    </div>
   );
 }
 

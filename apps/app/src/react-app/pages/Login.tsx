@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AuthCard } from '../components/AuthCard';
 import { LoginForm } from '../components/LoginForm';
 import type { ConfigResponse } from '../lib/api';
 
@@ -21,8 +22,8 @@ export function Login() {
   }, []);
 
   return (
-    <section style={{ maxWidth: 420 }}>
+    <AuthCard maxWidth={440}>
       {config ? <LoginForm turnstileSiteKey={config.turnstileSiteKey} /> : null}
-    </section>
+    </AuthCard>
   );
 }
