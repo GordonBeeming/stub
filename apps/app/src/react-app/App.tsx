@@ -1,6 +1,5 @@
-import { Route, Switch } from 'wouter';
+import { Link, Route, Switch } from 'wouter';
 import { Footer, PageHeader } from '@gordonbeeming/design-system';
-import { ThemeToggle } from '@gordonbeeming/design-system/theme-toggle';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Enroll } from './pages/Enroll';
@@ -17,18 +16,20 @@ export function App() {
     <div className="ds-wrap">
       <PageHeader
         brand={
-          <>
+          <Link
+            href="/"
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+              display: 'inline-block',
+            }}
+          >
             {'// '}
             <b>stub</b>
             {' · short links & burn notes'}
-          </>
+          </Link>
         }
-        meta={
-          <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 16 }}>
-            <ThemeToggle />
-            <span>v0.1</span>
-          </span>
-        }
+        meta={<span>v0.1</span>}
       />
 
       <Switch>

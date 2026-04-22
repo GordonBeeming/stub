@@ -1,14 +1,6 @@
 import { useState } from 'react';
 import type { NoteMetaRow } from '../lib/types';
-
-const sectionTitle: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  fontWeight: 500,
-  fontSize: 'clamp(20px, 2.6vw, 22px)',
-  letterSpacing: '-0.01em',
-  color: 'var(--text)',
-  margin: '0 0 16px',
-};
+import { SectionTitle } from './SectionTitle';
 
 export interface NotesListProps {
   initialNotes: NoteMetaRow[];
@@ -68,7 +60,7 @@ export function NotesList({ initialNotes }: NotesListProps) {
 
   return (
     <section style={{ marginBottom: 56 }}>
-      <h2 style={sectionTitle}>Your notes</h2>
+      <SectionTitle eyebrow="burn notes">Your notes</SectionTitle>
 
       {selectedIds.size > 0 ? (
         <div

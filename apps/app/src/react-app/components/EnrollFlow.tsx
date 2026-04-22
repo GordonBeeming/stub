@@ -2,15 +2,7 @@ import { useState } from 'react';
 import { Link } from 'wouter';
 import { startRegistration } from '@simplewebauthn/browser';
 import { Comment } from '@gordonbeeming/design-system';
-
-const sectionTitle: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  fontWeight: 500,
-  fontSize: 'clamp(22px, 2.8vw, 26px)',
-  letterSpacing: '-0.01em',
-  color: 'var(--text)',
-  margin: '0 0 16px',
-};
+import { SectionTitle } from './SectionTitle';
 
 interface Props {
   addingMore: boolean;
@@ -49,7 +41,9 @@ export function EnrollFlow({ addingMore }: Props) {
 
   return (
     <>
-      <h2 style={sectionTitle}>{addingMore ? 'Add another passkey' : 'Enrol a passkey'}</h2>
+      <SectionTitle eyebrow={addingMore ? 'add passkey' : 'enrol passkey'}>
+        {addingMore ? 'Add another passkey' : 'Enrol a passkey'}
+      </SectionTitle>
 
       <p style={{ color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 20 }}>
         Your browser will ask you to confirm with Touch ID, Windows Hello, or a hardware key.
@@ -69,7 +63,7 @@ export function EnrollFlow({ addingMore }: Props) {
           disabled={status === 'running'}
           style={{
             background: 'var(--primary)',
-            color: '#000',
+            color: 'var(--on-primary)',
             border: 0,
             borderRadius: 'var(--radius-md)',
             padding: '10px 14px',

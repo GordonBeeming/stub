@@ -52,6 +52,18 @@ When the user asks you to change the design, update `DESIGN.md` **first**, then 
 - The `cloudflare-xylem-worker` sibling repo proxies `gordonbeeming.com/stub` to this Worker. The middleware in this app 301s `stub.gordonbeeming.com/stub*` to `gordonbeeming.com/stub*` so there's one canonical URL.
 - `pnpm build` at the root builds packages first, then the app, via the Turborepo pipeline.
 
+## Signing in during local dev
+
+Dev has no real email delivery. `RESEND_API_KEY=re_dev_fake` in `.dev.vars` short-circuits `sendMagicLink`, which then `console.log`s the magic-link URL to the dev server stdout. To sign in as the owner and see the dashboard:
+
+1. Read `OWNER_EMAIL` from `apps/app/wrangler.toml`. That's the exact string to paste into the login form. Any other email silently returns the same generic 200 response (anti-enumeration), so you'll never see a magic link logged.
+2. Start the dev server with its stdout captured to a file, e.g. `cd apps/app && nohup pnpm dev > /tmp/stub-dev.log 2>&1 &`.
+3. Submit the login form with that email. Turnstile must complete before the submit button enables.
+4. Grab the link from the log: `grep -A1 "magic link for" /tmp/stub-dev.log | tail -2`. The URL looks like `http://localhost:5173/api/auth/magic/callback?t=<token>`. It expires in 10 minutes and can only be consumed once.
+5. Navigate to that URL. You'll land on `/enroll` (first time) or `/dashboard` (if a passkey is already registered). "skip for now" on `/enroll` works fine for visual or behavioural testing.
+
+The D1 table `magic_tokens` only stores the token's sha256 hash, so there's no way to recover a valid URL from the database. The server log is the only source.
+
 ## Workflow rules
 
 1. **Run `pnpm install` from the root**, never inside a package.

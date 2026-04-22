@@ -538,6 +538,10 @@
 
 /* ——— Footer ——— */
 .ds-footer {
+  /* Push the hairline off the bottom of the content so short pages (login,
+   * enroll, empty-state dashboard tabs) don't stack tight against the
+   * footer rule. Sits above the existing padding + border. */
+  margin-top: 72px;
   padding-top: 32px;
   border-top: 1px solid var(--line);
   font-family: var(--font-mono);

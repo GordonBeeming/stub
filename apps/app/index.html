@@ -5,23 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <title>stub</title>
-    <script>
-      // Pre-paint theme decision: read localStorage.stub-theme and set
-      // data-theme on <html> before the React app hydrates. Without this,
-      // users who chose light/dark explicitly see a flash of the system
-      // default on every hard load.
-      (function () {
-        try {
-          var saved = localStorage.getItem('stub-theme');
-          if (saved === 'light' || saved === 'dark') {
-            document.documentElement.setAttribute('data-theme', saved);
-          }
-        } catch (_) {
-          // localStorage blocked (private mode, storage disabled) — fall
-          // back to prefers-color-scheme via the CSS tokens file.
-        }
-      })();
-    </script>
   </head>
   <body>
     <div id="root"></div>
