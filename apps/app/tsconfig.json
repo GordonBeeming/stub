@@ -1,22 +1,16 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "plugins": [{ "name": "next" }],
-    "jsx": "preserve",
-    "incremental": true,
+    "jsx": "react-jsx",
     "noEmit": true,
     "allowJs": false,
-    "types": ["@cloudflare/workers-types", "node"],
+    "types": ["@cloudflare/workers-types", "vite/client"],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"],
+      "@worker/*": ["./src/worker/*"],
+      "@app/*": ["./src/react-app/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "cloudflare-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": ["node_modules", ".next", ".open-next", "dist"]
+  "include": ["cloudflare-env.d.ts", "src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
+  "exclude": ["node_modules", "dist", ".wrangler"]
 }

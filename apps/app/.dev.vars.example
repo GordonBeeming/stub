@@ -1,4 +1,13 @@
-# Copy to .dev.vars for local `wrangler dev` / `next dev`. NEVER commit .dev.vars.
+# Copy to .dev.vars for local `pnpm dev` / `./run.sh`. NEVER commit .dev.vars.
+#
+# TURNSTILE_SECRET pairing:
+#   - If your local wrangler.toml uses the always-pass TEST site key
+#     (1x00000000000000000000AA), keep the test secret below as-is.
+#   - If your local wrangler.toml uses your REAL Turnstile site key
+#     (same one you ship to production), paste your REAL secret here too
+#     and add `localhost` to the Turnstile site's allowed domains so the
+#     widget issues tokens that verify. A real site key paired with the
+#     test secret always 400s on verify.
 SESSION_SECRET="change-me-to-a-long-random-string-at-least-32-bytes"
 RESEND_API_KEY="re_xxxxxxxxxxxxxxxxxxxxx"
 TURNSTILE_SECRET="1x0000000000000000000000000000000AA"

@@ -2,14 +2,27 @@
 # set them with `wrangler secret put <NAME>` (see list at bottom).
 
 name = "stub"
-# Custom entry wraps .open-next/worker.js so we can add a scheduled() handler
-# alongside fetch — see worker-entry.ts.
-main = "./worker-entry.ts"
-compatibility_date = "2025-04-01"
+main = "./src/worker/index.ts"
+compatibility_date = "2026-04-21"
 compatibility_flags = ["nodejs_compat"]
 
-# Static assets bundled by @opennextjs/cloudflare.
-assets = { directory = ".open-next/assets", binding = "ASSETS" }
+# The Vite build writes the SPA bundle to ./dist. Wrangler serves it as
+# the static asset origin; not_found_handling = "single-page-application"
+# means any route the Worker doesn't claim falls through to index.html
+# for client-side routing, instead of returning 404.
+[assets]
+# @cloudflare/vite-plugin builds the SPA to dist/client and the Worker to
+# dist/stub. Keep this pointing at dist/client so local wrangler commands
+# that don't go through Vite still find the SPA bundle.
+directory = "./dist/client"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+# Browser navigation requests (Sec-Fetch-Mode: navigate) default to assets
+# first, so without this the /api/auth/magic/callback redirect gets
+# swallowed and index.html renders instead. run_worker_first = true flips
+# the order: Hono handles /api/* and /s/*, and the wildcard in
+# src/worker/index.ts forwards everything else to assets for the SPA.
+run_worker_first = true
 
 # --- Bindings ---------------------------------------------------------------
 
@@ -36,10 +49,6 @@ id = "0000000000000000000000000000000000000000000000000000000000000000"
 # binding = "BACKUPS"
 # bucket_name = "stub-backups"
 
-# Turnstile binding (widget-based verification uses secret server-side; the
-# site key goes in the var below so client components can read it).
-# No native `[[turnstile]]` binding exists yet — we call the siteverify API.
-
 # --- Vars (non-secret) ------------------------------------------------------
 
 [vars]
@@ -56,23 +65,16 @@ TURNSTILE_SITE_KEY = "1x00000000000000000000AA"  # Cloudflare always-pass test k
 crons = ["0 3 * * *"]
 
 # --- Observability ----------------------------------------------------------
-# Enables log capture in the Cloudflare dashboard (Workers > stub > Logs) and
-# lets `wrangler tail` stream live logs. Free-tier quota is generous.
-# In prod lower head_sampling_rate (e.g. 0.1 = keep 10% of invocations) to
-# stay under the retention window if traffic grows.
+
 [observability]
 enabled = true
 head_sampling_rate = 1.0
 
 # --- Secrets (set via `wrangler secret put <NAME>`) ------------------------
-# SESSION_SECRET     - HS256 signing key for session JWTs (>= 32 bytes random)
+# SESSION_SECRET      - HS256 signing key for session JWTs (>= 32 bytes random)
 # SESSION_SECRET_PREV - optional; set only during a rotation window so cookies
 #                       signed with the old key keep verifying. Delete once the
-#                       rotation window is over (see setup guide §11).
-# RESEND_API_KEY     - Resend API key for magic-link emails
-# TURNSTILE_SECRET   - Cloudflare Turnstile server-side secret
-# IP_HASH_SALT       - Rotating salt for IP hashes in audit/link_clicks
-
-# --- Environments -----------------------------------------------------------
-# Define [env.production] / [env.preview] overrides here if you want separate
-# D1/KV IDs per environment.
+#                       rotation window is over.
+# RESEND_API_KEY      - Resend API key for magic-link emails
+# TURNSTILE_SECRET    - Cloudflare Turnstile server-side secret
+# IP_HASH_SALT        - Rotating salt for IP hashes in audit/link_clicks
