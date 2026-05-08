@@ -20,7 +20,7 @@
     "@gordonbeeming/design-system": "workspace:*",
     "@simplewebauthn/browser": "^13.3.0",
     "@simplewebauthn/server": "^13.3.0",
-    "hono": "^4.10.5",
+    "hono": "^4.12.16",
     "jose": "^6.2.2",
     "nanoid": "^5.1.9",
     "resend": "^6.12.2",
